@@ -19,12 +19,9 @@ jobs:
       - run:
           name: Test
           command: |
+            mkdir -p test-reports
             GO111MODULE=off go get github.com/jstemmer/go-junit-report
-            GO111MODULE=off go get github.com/axw/gocov/gocov
-            GO111MODULE=off go get github.com/AlekSi/gocov-xml
-            go test -v ./... -count=1 -coverprofile=cover.out | go-junit-report > report.xml
-            gocov convert cover.out | gocov-xml > coverage.xml
-
+            go test -v ./... -count=1 -coverprofile=cover.out | go-junit-report > test-reports/junit.xml
       - run: go build
 
       - store_artifacts:
@@ -40,15 +37,15 @@ jobs:
       - run:
           name: Upload coverage results to Code Climate
           command: |
-            ./cc-test-reporter format-coverage -t gcov
+            ./cc-test-reporter format-coverage -t gocov -p github.com/Pocket/ops-cli
             ./cc-test-reporter upload-coverage
 
       - store_test_results:
           path: report.xml
 
       - store_artifacts:
-          path: coverage.xml
-          destination: coverage.xml
+          path: coverage
+          destination: coverage
 
 
 workflows:
