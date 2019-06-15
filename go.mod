@@ -6,4 +6,5 @@ require (
 	github.com/aws/aws-sdk-go v1.20.0
 	github.com/urfave/cli v1.20.0
 	gopkg.in/src-d/go-git.v4 v4.11.0
+	gotest.tools v2.2.0+incompatible
 )

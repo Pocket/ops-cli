@@ -13,3 +13,7 @@
 
 ops-cli
 vendor
+
+# IDEs
+.idea
+!.idea/codeStyles/*.xml

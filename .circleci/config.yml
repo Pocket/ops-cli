@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build:
+  build_&_test:
     docker:
       - image: circleci/golang:1.12
     steps:
@@ -12,11 +12,12 @@ jobs:
             - go-
 
       - run: go mod vendor
-      - save_cache: # Store cache in the /go/pkg directory
+      - save_cache:
           key: go-{{ checksum "go.sum" }}
           paths:
             - "vendor"
 
+      - run: go test -v ./...
       - run: go build
 
       - store_artifacts:
@@ -27,4 +28,4 @@ workflows:
   version: 2
   all:
     jobs:
-      - build
+      - build_&_test
