@@ -17,3 +17,4 @@ vendor
 # IDEs
 .idea
 !.idea/codeStyles/*.xml
+report.xml

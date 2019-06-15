@@ -1,19 +1,21 @@
 package util
 
-func RemoveDuplicatesFromSlice(s []string) []string {
-	m := make(map[string]bool)
-	for _, item := range s {
-		if _, ok := m[item]; ok {
-			// duplicate item
+func RemoveDuplicatesFromSlice(elements []string) []string {
+	// Use map to record duplicates as we find them.
+	encountered := map[string]bool{}
+	result := []string{}
+
+	for v := range elements {
+		if encountered[elements[v]] == true {
+			// Do not add duplicate.
 		} else {
-			m[item] = true
+			// Record this element as an encountered element.
+			encountered[elements[v]] = true
+			// Append to result slice.
+			result = append(result, elements[v])
 		}
 	}
-
-	var result []string
-	for item, _ := range m {
-		result = append(result, item)
-	}
+	// Return the new slice.
 	return result
 }
 

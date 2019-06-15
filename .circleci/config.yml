@@ -16,13 +16,40 @@ jobs:
           key: go-{{ checksum "go.sum" }}
           paths:
             - "vendor"
+      - run:
+          name: Test
+          command: |
+            GO111MODULE=off go get github.com/jstemmer/go-junit-report
+            GO111MODULE=off go get github.com/axw/gocov/gocov
+            GO111MODULE=off go get github.com/AlekSi/gocov-xml
+            go test -v ./... -count=1 -coverprofile=cover.out | go-junit-report > report.xml
+            gocov convert cover.out | gocov-xml > coverage.xml
 
-      - run: go test -v ./...
       - run: go build
 
       - store_artifacts:
           path: ops-cli
           destination: ops-cli
+
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run:
+          name: Upload coverage results to Code Climate
+          command: |
+            ./cc-test-reporter format-coverage -t gcov
+            ./cc-test-reporter upload-coverage
+
+      - store_test_results:
+          path: report.xml
+
+      - store_artifacts:
+          path: coverage.xml
+          destination: coverage.xml
+
 
 workflows:
   version: 2
