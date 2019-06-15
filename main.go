@@ -36,17 +36,14 @@ func addInfo(app *cli.App) {
 	app.Copyright = "(c) 2019 Read It Later, Inc."
 }
 
-func addCommands(app *cli.App)  {
+func addCommands(app *cli.App) {
 	app.Commands = []cli.Command{
 		{
 			Name:    "active-branches",
 			Aliases: []string{"ab"},
 			Usage:   "Get a list of all the branches with commits in the last 8 days",
-			Action:  func(c *cli.Context) error {
-				activeBranches, unactiveBranches, err := git.GetActiveAndUnactiveBranchNames()
-				if err != nil {
-					return err
-				}
+			Action: func(c *cli.Context) error {
+				activeBranches, unactiveBranches := git.GetActiveAndUnactiveBranchNames()
 
 				for _, branch := range activeBranches {
 					fmt.Println(branch)
@@ -66,7 +63,7 @@ func addCommands(app *cli.App)  {
 			Name:    "active-cloudformation",
 			Aliases: []string{"ac"},
 			Usage:   "Get a list of all the active cloudformation stacks",
-			Action:  func(c *cli.Context) error {
+			Action: func(c *cli.Context) error {
 				stacks, err := aws.GetActiveCloudFormationStackBranchesWithPrefix("WebFeatureDeploy-")
 				if err != nil {
 					return err
@@ -83,7 +80,7 @@ func addCommands(app *cli.App)  {
 			Name:    "stacks-to-delete",
 			Aliases: []string{"sd"},
 			Usage:   "Get a list of stacks to delete",
-			Action:  func(c *cli.Context) error {
+			Action: func(c *cli.Context) error {
 				stackBranchNames, err := feature_deploy.GetStacksToDelete()
 				if err != nil {
 					return err
@@ -96,6 +93,15 @@ func addCommands(app *cli.App)  {
 				return nil
 			},
 		},
+		{
+			Name:    "up-to-date",
+			Aliases: []string{"ud"},
+			Usage:   "Up to date",
+			Action: func(c *cli.Context) error {
+				git.UpToDateWithOriginMaster()
+
+				return nil
+			},
+		},
 	}
 }
-

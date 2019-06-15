@@ -1,6 +1,5 @@
 package aws
 
-
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -28,7 +27,7 @@ func GetActiveCloudFormationStackBranchesWithPrefix(prefix string) ([]string, er
 	return activeCloudFormationBranches, err
 }
 
-func getActiveCloudFormationStacks() ([]*cloudformation.Stack, error)  {
+func getActiveCloudFormationStacks() ([]*cloudformation.Stack, error) {
 	sess, err := session.NewSession(&aws.Config{})
 	if err != nil {
 		return nil, err

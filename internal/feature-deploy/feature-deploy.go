@@ -12,10 +12,7 @@ func GetStacksToDelete() ([]string, error) {
 		return nil, err
 	}
 
-	activeBranchNames, unactiveBranchNames, err := git.GetActiveAndUnactiveBranchNames()
-	if err != nil {
-		return nil, err
-	}
+	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames()
 
 	var branchesToClean []string
 
