@@ -41,7 +41,7 @@ jobs:
             ./cc-test-reporter upload-coverage
 
       - store_test_results:
-          path: report.xml
+          path: test-reports
 
       - store_artifacts:
           path: coverage
