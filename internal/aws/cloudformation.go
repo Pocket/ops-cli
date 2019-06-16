@@ -26,18 +26,22 @@ func ActiveCloudFormationStackBranchesWithPrefix(prefix string) []string {
 }
 
 func DeleteStack(stackName string) {
-	_, err := cloudFormationClient().DeleteStackRequest(&cloudformation.DeleteStackInput{
+	client, clientContext := cloudFormationClient()
+
+	_, err := client.DeleteStackRequest(&cloudformation.DeleteStackInput{
 		StackName: &stackName,
-	}).Send(context.TODO())
+	}).Send(clientContext)
 	if err != nil {
 		panic("error deleting stack, " + err.Error())
 	}
 }
 
 func StackExists(stackName string) bool {
-	stack, err := cloudFormationClient().DescribeStacksRequest(&cloudformation.DescribeStacksInput{
+	client, clientContext := cloudFormationClient()
+
+	stack, err := client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{
 		StackName: &stackName,
-	}).Send(context.TODO())
+	}).Send(clientContext)
 
 	if err != nil {
 		panic("error getting stack, " + err.Error())
@@ -47,7 +51,7 @@ func StackExists(stackName string) bool {
 }
 
 func CreateStack(settings *Settings) *string {
-	client := cloudFormationClient()
+	client, clientContext := cloudFormationClient()
 
 	createResponse, err := client.CreateStackRequest(&cloudformation.CreateStackInput{
 		StackName:    settings.StackName,
@@ -56,13 +60,13 @@ func CreateStack(settings *Settings) *string {
 		TemplateBody: settings.TemplateBody,
 		OnFailure:    settings.OnFailure,
 		Capabilities: settings.Capabilities,
-	}).Send(context.TODO())
+	}).Send(clientContext)
 
 	if err != nil {
 		panic("error creating stack," + err.Error())
 	}
 
-	err = cloudFormationClient().WaitUntilStackCreateComplete(context.TODO(), &cloudformation.DescribeStacksInput{
+	err = client.WaitUntilStackCreateComplete(clientContext, &cloudformation.DescribeStacksInput{
 		StackName: createResponse.StackId,
 	})
 
@@ -80,7 +84,9 @@ func CreateStackParams(paramFilePath string, stackName *string, templatefilePath
 }
 
 func activeCloudFormationStacks() ([]cloudformation.Stack) {
-	stacks, err := cloudFormationClient().DescribeStacksRequest(&cloudformation.DescribeStacksInput{}).Send(context.TODO())
+	client, clientContext := cloudFormationClient()
+
+	stacks, err := client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{}).Send(clientContext)
 	//TODO: Do we need to paginate? (aws cli doesn't)
 	if err != nil {
 		panic("error getting stacks, " + err.Error())
@@ -89,7 +95,7 @@ func activeCloudFormationStacks() ([]cloudformation.Stack) {
 	return stacks.Stacks
 }
 
-func cloudFormationClient() *cloudformation.Client {
+func cloudFormationClient() (*cloudformation.Client, context.Context) {
 	// Using the SDK's default configuration, loading additional config
 	// and credentials values from the environment variables, shared
 	// credentials, and shared configuration files
@@ -97,11 +103,11 @@ func cloudFormationClient() *cloudformation.Client {
 	if err != nil {
 		panic("unable to load SDK config, " + err.Error())
 	}
-	cfg.HTTPClient.Transport = awsRecorder()
-	return cloudformation.New(cfg)
+	cfg.HTTPClient.Transport = awsCloudformationRecorder()
+	return cloudformation.New(cfg), context.Background()
 }
 
-func awsRecorder() *recorder.Recorder {
+func awsCloudformationRecorder() *recorder.Recorder {
 	r, err := recorder.New("_fixtures/cloudformation")
 	if err != nil {
 		panic(err)
