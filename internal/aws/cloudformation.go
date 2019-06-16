@@ -1,17 +1,15 @@
 package aws
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/cloudformation"
+	"context"
+	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
+	"github.com/dnaeon/go-vcr/recorder"
 	"strings"
 )
 
-func GetActiveCloudFormationStackBranchesWithPrefix(prefix string) ([]string, error) {
-	stacks, err := getActiveCloudFormationStacks()
-	if err != nil {
-		return nil, err
-	}
+func ActiveCloudFormationStackBranchesWithPrefix(prefix string) []string {
+	stacks := activeCloudFormationStacks()
 
 	var activeCloudFormationBranches []string
 	for _, stack := range stacks {
@@ -24,20 +22,44 @@ func GetActiveCloudFormationStackBranchesWithPrefix(prefix string) ([]string, er
 		}
 	}
 
-	return activeCloudFormationBranches, err
+	return activeCloudFormationBranches
 }
 
-func getActiveCloudFormationStacks() ([]*cloudformation.Stack, error) {
-	sess, err := session.NewSession(&aws.Config{})
+func DeleteStack(stackName string) {
+	_, err := cloudFormationClient().DeleteStackRequest(&cloudformation.DeleteStackInput{StackName: &stackName}).Send(context.TODO())
 	if err != nil {
-		return nil, err
+		panic("error deleting stack, " + err.Error())
+	}
+}
+
+func activeCloudFormationStacks() ([]cloudformation.Stack) {
+	stacks, err := cloudFormationClient().DescribeStacksRequest(&cloudformation.DescribeStacksInput{}).Send(context.TODO())
+	//TODO: Do we need to paginate? (aws cli doesn't)
+	if err != nil {
+		panic("error getting stacks, " + err.Error())
 	}
 
-	client := cloudformation.New(sess)
-	stacks, err := client.DescribeStacks(&cloudformation.DescribeStacksInput{})
-	if err != nil {
-		return nil, err
-	}
+	return stacks.Stacks
+}
 
-	return stacks.Stacks, nil
+func cloudFormationClient() *cloudformation.Client {
+	// Using the SDK's default configuration, loading additional config
+	// and credentials values from the environment variables, shared
+	// credentials, and shared configuration files
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		panic("unable to load SDK config, " + err.Error())
+	}
+	cfg.HTTPClient.Transport = awsRecorder()
+	return cloudformation.New(cfg)
+}
+
+func awsRecorder() *recorder.Recorder {
+	r, err := recorder.New("fixtures/cloudformation")
+	if err != nil {
+		panic(err)
+	}
+	defer r.Stop() // Make sure recorder is stopped once done with it
+
+	return r
 }

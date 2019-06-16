@@ -1,7 +1,7 @@
 package git
 
 func UpToDateWithOriginMaster() {
-//	r := getRepo(".")
+//	r := repo(".")
 //
 //	currentRef, _ := r.Head()
 //
@@ -9,7 +9,7 @@ func UpToDateWithOriginMaster() {
 //
 //
 //
-//	masterReference := getMaster(r)
+//	masterReference := master(r)
 //	masterCommit, _ := r.CommitObject(masterReference.Hash())
 //
 //

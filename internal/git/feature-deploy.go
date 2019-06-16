@@ -16,14 +16,14 @@ func GetActiveAndUnactiveBranchNames() ([]string, []string) {
  * Gets the active and unactive branch refs
  */
 func getActiveAndUnactiveBranches() ([]*plumbing.Reference, []*plumbing.Reference) {
-	r := getRepo(".")
+	r := repo(".")
 
 	refs, err := r.References()
 	if err != nil {
 		panic(err)
 	}
 
-	masterReference := getMaster(r)
+	masterReference := master(r)
 
 	eightDaysAgo := time.Now().AddDate(0, 0, -8)
 

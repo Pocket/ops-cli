@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Pocket/ops-cli/internal/aws"
-	feature_deploy "github.com/Pocket/ops-cli/internal/feature-deploy"
+	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 	"github.com/Pocket/ops-cli/internal/git"
 	"github.com/urfave/cli"
 	"log"
@@ -44,7 +43,7 @@ func addCommands(app *cli.App) {
 			Usage:   "Get a list of all the branches with commits in the last 8 days",
 			Action: func(c *cli.Context) error {
 				activeBranches, unactiveBranches := git.GetActiveAndUnactiveBranchNames()
-
+				fmt.Println("----------------Active Branches----------------")
 				for _, branch := range activeBranches {
 					fmt.Println(branch)
 				}
@@ -52,6 +51,7 @@ func addCommands(app *cli.App) {
 				fmt.Println()
 				fmt.Println()
 				fmt.Println()
+				fmt.Println("----------------UnActive Branches----------------")
 				for _, branch := range unactiveBranches {
 					fmt.Println(branch)
 				}
@@ -60,19 +60,11 @@ func addCommands(app *cli.App) {
 			},
 		},
 		{
-			Name:    "active-cloudformation",
+			Name:    "cleanup",
 			Aliases: []string{"ac"},
-			Usage:   "Get a list of all the active cloudformation stacks",
+			Usage:   "Cleanup all unactive stacks with the prefix",
 			Action: func(c *cli.Context) error {
-				stacks, err := aws.GetActiveCloudFormationStackBranchesWithPrefix("WebFeatureDeploy-")
-				if err != nil {
-					return err
-				}
-
-				for _, stack := range stacks {
-					fmt.Println(stack)
-				}
-
+				featureDeploy.CleanUpBranches("WebFeatureDeploy-")
 				return nil
 			},
 		},
@@ -81,10 +73,7 @@ func addCommands(app *cli.App) {
 			Aliases: []string{"sd"},
 			Usage:   "Get a list of stacks to delete",
 			Action: func(c *cli.Context) error {
-				stackBranchNames, err := feature_deploy.GetStacksToDelete()
-				if err != nil {
-					return err
-				}
+				stackBranchNames := featureDeploy.BranchesToDelete("WebFeatureDeploy-")
 
 				for _, stackBranchName := range stackBranchNames {
 					fmt.Println(stackBranchName)
