@@ -41,33 +41,70 @@ func addCommands(app *cli.App) {
 
 	app.Commands = []cli.Command{
 		{
-			Name:    "active-branches",
-			Aliases: []string{"ab"},
-			Usage:   "Get a list of all the branches with commits in the last 8 days",
+			Name:    "feature-cleanup",
+			Aliases: []string{"ac"},
+			Usage:   "Cleanup all unactive stacks with the prefix",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "stack-prefix, p",
+					Usage:  "The stack prefix for these deployments (WebFeatureDeploy-)",
+					EnvVar: "STACK_PREFIX",
+				},
+				cli.BoolTFlag{
+					Name:   "dry-run, d",
+					Usage:  "Perform a dry run, true by default",
+					EnvVar: "DRY_RUN",
+				},
+			},
 			Action: func(c *cli.Context) error {
-				activeBranches, unactiveBranches := git.GetActiveAndUnactiveBranchNames()
-				fmt.Println("----------------Active Branches----------------")
-				for _, branch := range activeBranches {
-					fmt.Println(branch)
-				}
-				fmt.Println()
-				fmt.Println()
-				fmt.Println()
-				fmt.Println()
-				fmt.Println("----------------UnActive Branches----------------")
-				for _, branch := range unactiveBranches {
-					fmt.Println(branch)
+				stackPrefix := c.String("stack-prefix")
+				if c.BoolT("dry-run") {
+					stackBranchNames := featureDeploy.BranchesToDelete(stackPrefix)
+
+					for _, stackBranchName := range stackBranchNames {
+						fmt.Println(stackBranchName)
+					}
+
+					return nil
 				}
 
+				featureDeploy.CleanUpBranches(stackPrefix)
 				return nil
 			},
 		},
 		{
-			Name:    "feature-cleanup",
-			Aliases: []string{"ac"},
-			Usage:   "Cleanup all unactive stacks with the prefix",
+			Name:    "feature-deploy",
+			Aliases: []string{"fd"},
+			Usage:   "Deploy a feature branch",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "stack-prefix, s",
+					Usage:  "The stack prefix for these deployments (WebFeatureDeploy-)",
+					EnvVar: "STACK_PREFIX",
+				},
+				cli.StringFlag{
+					Name:   "param-file, p",
+					Usage:  "The parameter file",
+					EnvVar: "PARAM_FILE",
+				},
+				cli.StringFlag{
+					Name:   "template-file, t",
+					Usage:  "The template file",
+					EnvVar: "TEMPLATE_FILE",
+				},
+				cli.StringFlag{
+					Name:   "git-sha, g",
+					Usage:  "The git sha",
+					EnvVar: "GIT_SHA",
+				},
+				cli.StringFlag{
+					Name:   "branch-name, b",
+					Usage:  "The branch name",
+					EnvVar: "BRANCH_NAME",
+				},
+			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.CleanUpBranches("WebFeatureDeploy-")
+
 				return nil
 			},
 		},
@@ -91,9 +128,9 @@ func addCommands(app *cli.App) {
 			},
 		},
 		{
-			Name:    "stack-deploy",
-			Aliases: []string{"s"},
-			Usage:   "Deploy a stack",
+			Name:    "create-stack",
+			Aliases: []string{"cs"},
+			Usage:   "Create a stack",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:   "stack-name, s",
@@ -114,51 +151,6 @@ func addCommands(app *cli.App) {
 			Action: func(c *cli.Context) error {
 				stackName := c.String("stack-name")
 				aws.CreateStackParams(c.String("param-file"), &stackName, c.String("template-file"))
-				return nil
-			},
-		},
-		{
-			Name:    "feature-deploy",
-			Aliases: []string{"fd"},
-			Usage:   "Deploy a feature branch",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:   "stack-name, s",
-					Usage:  "The stack name to deploy",
-					EnvVar: "STACK_NAME",
-				},
-				cli.StringFlag{
-					Name:   "param-file, p",
-					Usage:  "The parameter file",
-					EnvVar: "PARAM_FILE",
-				},
-				cli.StringFlag{
-					Name:   "template-file, t",
-					Usage:  "The template file",
-					EnvVar: "TEMPLATE_FILE",
-				},
-				cli.StringFlag{
-					Name:   "git-sha, g",
-					Usage:  "The git sha",
-					EnvVar: "GIT_SHA",
-				},
-			},
-			Action: func(c *cli.Context) error {
-
-				return nil
-			},
-		},
-		{
-			Name:    "stacks-to-delete",
-			Aliases: []string{"sd"},
-			Usage:   "Get a list of stacks to delete",
-			Action: func(c *cli.Context) error {
-				stackBranchNames := featureDeploy.BranchesToDelete("WebFeatureDeploy-")
-
-				for _, stackBranchName := range stackBranchNames {
-					fmt.Println(stackBranchName)
-				}
-
 				return nil
 			},
 		},
