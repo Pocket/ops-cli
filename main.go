@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/Pocket/ops-cli/internal/aws"
 	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 	"github.com/Pocket/ops-cli/internal/git"
-	"github.com/urfave/cli"
+	"github.com/pkg/errors"
+	"gopkg.in/urfave/cli.v1"
 	"log"
 	"os"
 	"time"
@@ -36,6 +38,7 @@ func addInfo(app *cli.App) {
 }
 
 func addCommands(app *cli.App) {
+
 	app.Commands = []cli.Command{
 		{
 			Name:    "active-branches",
@@ -60,11 +63,88 @@ func addCommands(app *cli.App) {
 			},
 		},
 		{
-			Name:    "cleanup",
+			Name:    "feature-cleanup",
 			Aliases: []string{"ac"},
 			Usage:   "Cleanup all unactive stacks with the prefix",
 			Action: func(c *cli.Context) error {
 				featureDeploy.CleanUpBranches("WebFeatureDeploy-")
+				return nil
+			},
+		},
+		{
+			Name:    "stack-exists",
+			Aliases: []string{"se"},
+			Usage:   "Check if a stack exists",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "stack-name, s",
+					Usage:  "The stack to check for",
+					EnvVar: "STACK_NAME",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				if !aws.StackExists(c.String("stack-name")) {
+					return errors.New("Stack not found")
+				}
+				fmt.Println("Stack found")
+				return nil
+			},
+		},
+		{
+			Name:    "stack-deploy",
+			Aliases: []string{"s"},
+			Usage:   "Deploy a stack",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "stack-name, s",
+					Usage:  "The stack name to deploy",
+					EnvVar: "STACK_NAME",
+				},
+				cli.StringFlag{
+					Name:   "param-file, p",
+					Usage:  "The parameter file",
+					EnvVar: "PARAM_FILE",
+				},
+				cli.StringFlag{
+					Name:   "template-file, t",
+					Usage:  "The template file",
+					EnvVar: "TEMPLATE_FILE",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				stackName := c.String("stack-name")
+				aws.CreateStackParams(c.String("param-file"), &stackName, c.String("template-file"))
+				return nil
+			},
+		},
+		{
+			Name:    "feature-deploy",
+			Aliases: []string{"fd"},
+			Usage:   "Deploy a feature branch",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "stack-name, s",
+					Usage:  "The stack name to deploy",
+					EnvVar: "STACK_NAME",
+				},
+				cli.StringFlag{
+					Name:   "param-file, p",
+					Usage:  "The parameter file",
+					EnvVar: "PARAM_FILE",
+				},
+				cli.StringFlag{
+					Name:   "template-file, t",
+					Usage:  "The template file",
+					EnvVar: "TEMPLATE_FILE",
+				},
+				cli.StringFlag{
+					Name:   "git-sha, g",
+					Usage:  "The git sha",
+					EnvVar: "GIT_SHA",
+				},
+			},
+			Action: func(c *cli.Context) error {
+
 				return nil
 			},
 		},

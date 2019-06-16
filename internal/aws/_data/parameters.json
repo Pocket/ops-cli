@@ -1,0 +1,55 @@
+{
+  "parameters": [
+    {
+      "ParameterKey": "IamStack",
+      "ParameterValue": "WebFeatureIAM"
+    },
+    {
+      "ParameterKey": "ALBStack",
+      "ParameterValue": "WebFeatureShared"
+    },
+    {
+      "ParameterKey": "Env",
+      "ParameterValue": "Feature"
+    },
+    {
+      "ParameterKey": "HostedZoneId",
+      "ParameterValue": "1234"
+    },
+    {
+      "ParameterKey": "DomainBase",
+      "ParameterValue": "web.test.com"
+    },
+    {
+      "ParameterKey": "BranchName",
+      "ParameterValue": "feature-deploys"
+    },
+    {
+      "ParameterKey": "GitSHA",
+      "ParameterValue": "latest"
+    }
+  ],
+  "tags": [
+    {
+      "key": "GitSHA",
+      "value": "WebFeature"
+    },
+    {
+      "key": "Env",
+      "value": "Feature"
+    },
+    {
+      "key": "BranchName",
+      "value": "feature-deploys"
+    }
+  ],
+  "stack_name": "stackname",
+  "on_failure": "DELETE",
+  "capabilities": [
+    "CAPABILITY_IAM",
+    "CAPABILITY_NAMED_IAM",
+    "CAPABILITY_AUTO_EXPAND"
+  ],
+  "template_body": "file://test.yaml",
+  "timeout_in_minutes": 5
+}

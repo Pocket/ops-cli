@@ -26,10 +26,57 @@ func ActiveCloudFormationStackBranchesWithPrefix(prefix string) []string {
 }
 
 func DeleteStack(stackName string) {
-	_, err := cloudFormationClient().DeleteStackRequest(&cloudformation.DeleteStackInput{StackName: &stackName}).Send(context.TODO())
+	_, err := cloudFormationClient().DeleteStackRequest(&cloudformation.DeleteStackInput{
+		StackName: &stackName,
+	}).Send(context.TODO())
 	if err != nil {
 		panic("error deleting stack, " + err.Error())
 	}
+}
+
+func StackExists(stackName string) bool {
+	stack, err := cloudFormationClient().DescribeStacksRequest(&cloudformation.DescribeStacksInput{
+		StackName: &stackName,
+	}).Send(context.TODO())
+
+	if err != nil {
+		panic("error getting stack, " + err.Error())
+	}
+
+	return len(stack.Stacks) > 0
+}
+
+func CreateStack(settings *Settings) *string {
+	client := cloudFormationClient()
+
+	createResponse, err := client.CreateStackRequest(&cloudformation.CreateStackInput{
+		StackName:    settings.StackName,
+		Tags:         settings.Tags,
+		Parameters:   settings.Parameters,
+		TemplateBody: settings.TemplateBody,
+		OnFailure:    settings.OnFailure,
+		Capabilities: settings.Capabilities,
+	}).Send(context.TODO())
+
+	if err != nil {
+		panic("error creating stack," + err.Error())
+	}
+
+	err = cloudFormationClient().WaitUntilStackCreateComplete(context.TODO(), &cloudformation.DescribeStacksInput{
+		StackName: createResponse.StackId,
+	})
+
+	if err != nil {
+		panic("error waiting for stack complete, " + err.Error())
+	}
+
+	return createResponse.StackId
+}
+
+func CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
+	settings := NewSettingsParams(paramFilePath, stackName, templatefilePath, nil)
+	stackId := CreateStack(settings)
+	return stackId
 }
 
 func activeCloudFormationStacks() ([]cloudformation.Stack) {
@@ -55,7 +102,7 @@ func cloudFormationClient() *cloudformation.Client {
 }
 
 func awsRecorder() *recorder.Recorder {
-	r, err := recorder.New("fixtures/cloudformation")
+	r, err := recorder.New("_fixtures/cloudformation")
 	if err != nil {
 		panic(err)
 	}

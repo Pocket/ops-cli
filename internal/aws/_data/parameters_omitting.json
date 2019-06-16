@@ -1,0 +1,5 @@
+{
+  "on_failure": "DELETE",
+  "template_body": "file://test.yaml",
+  "timeout_in_minutes": 5
+}
