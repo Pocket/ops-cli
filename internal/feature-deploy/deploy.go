@@ -15,7 +15,6 @@ func DeployBranch(prefix string, branchName string, imageName string) {
 }
 
 func deployECS() {
-
 }
 
 func deployStack() {
