@@ -1,13 +1,15 @@
 package feature_deploy
 
 import (
-	"github.com/Pocket/ops-cli/internal/aws"
+	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
 )
 
 func DeployBranch(prefix string, branchName string, imageName string) {
+	cloudformationClient := cloudformation.New()
+
 	stackName := stackNameFromBranchName(prefix, branchName)
 
-	if aws.StackExists(stackName) {
+	if cloudformationClient.StackExists(stackName) {
 		deployECS()
 	} else {
 		deployStack()

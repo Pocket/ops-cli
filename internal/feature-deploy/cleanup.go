@@ -1,22 +1,26 @@
 package feature_deploy
 
 import (
-	"github.com/Pocket/ops-cli/internal/aws"
+	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
 	"github.com/Pocket/ops-cli/internal/git"
 	"github.com/Pocket/ops-cli/internal/util"
 )
 
 func CleanUpBranches(prefix string) {
+	client := cloudformation.New()
+
 	branchesToDelete := BranchesToDelete(prefix)
 
 	for _, branchName := range branchesToDelete {
-		aws.DeleteStack(stackNameFromBranchName(prefix, branchName))
+		client.DeleteStack(stackNameFromBranchName(prefix, branchName))
 		//TODO: Notify Slack
 	}
 }
 
 func BranchesToDelete(prefix string) []string {
-	stackBranchNames := aws.ActiveCloudFormationStackBranchesWithPrefix(prefix)
+	client := cloudformation.New()
+
+	stackBranchNames := client.ActiveCloudFormationStackBranchesWithPrefix(prefix)
 
 	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames()
 

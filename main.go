@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Pocket/ops-cli/internal/aws"
+	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
 	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 	"github.com/Pocket/ops-cli/internal/git"
 	"github.com/pkg/errors"
@@ -115,7 +115,9 @@ func addCommands(app *cli.App) {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				if !aws.StackExists(c.String("stack-name")) {
+				cloudformationClient := cloudformation.New()
+
+				if !cloudformationClient.StackExists(c.String("stack-name")) {
 					return errors.New("Stack not found")
 				}
 				fmt.Println("Stack found")
@@ -144,8 +146,10 @@ func addCommands(app *cli.App) {
 				},
 			},
 			Action: func(c *cli.Context) error {
+				cloudformationClient := cloudformation.New()
+
 				stackName := c.String("stack-name")
-				aws.CreateStackParams(c.String("param-file"), &stackName, c.String("template-file"))
+				cloudformationClient.CreateStackParams(c.String("param-file"), &stackName, c.String("template-file"))
 				return nil
 			},
 		},

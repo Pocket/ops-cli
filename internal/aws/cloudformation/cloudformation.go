@@ -1,15 +1,29 @@
-package aws
+package cloudformation
 
 import (
 	"context"
+	"github.com/Pocket/ops-cli/internal/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"github.com/dnaeon/go-vcr/recorder"
 	"strings"
 )
 
-func ActiveCloudFormationStackBranchesWithPrefix(prefix string) []string {
-	stacks := activeCloudFormationStacks()
+type Client struct {
+	client        *cloudformation.Client
+	clientContext context.Context
+}
+
+func New() *Client {
+	client, clientContext := cloudFormationClient()
+	return &Client{
+		client:        client,
+		clientContext: clientContext,
+	}
+}
+
+func (c *Client) ActiveCloudFormationStackBranchesWithPrefix(prefix string) []string {
+	stacks := c.activeCloudFormationStacks()
 
 	var activeCloudFormationBranches []string
 	for _, stack := range stacks {
@@ -25,23 +39,19 @@ func ActiveCloudFormationStackBranchesWithPrefix(prefix string) []string {
 	return activeCloudFormationBranches
 }
 
-func DeleteStack(stackName string) {
-	client, clientContext := cloudFormationClient()
-
-	_, err := client.DeleteStackRequest(&cloudformation.DeleteStackInput{
+func (c *Client) DeleteStack(stackName string) {
+	_, err := c.client.DeleteStackRequest(&cloudformation.DeleteStackInput{
 		StackName: &stackName,
-	}).Send(clientContext)
+	}).Send(c.clientContext)
 	if err != nil {
 		panic("error deleting stack, " + err.Error())
 	}
 }
 
-func StackExists(stackName string) bool {
-	client, clientContext := cloudFormationClient()
-
-	stack, err := client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{
+func (c *Client) StackExists(stackName string) bool {
+	stack, err := c.client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{
 		StackName: &stackName,
-	}).Send(clientContext)
+	}).Send(c.clientContext)
 
 	if err != nil {
 		panic("error getting stack, " + err.Error())
@@ -50,23 +60,21 @@ func StackExists(stackName string) bool {
 	return len(stack.Stacks) > 0
 }
 
-func CreateStack(settings *Settings) *string {
-	client, clientContext := cloudFormationClient()
-
-	createResponse, err := client.CreateStackRequest(&cloudformation.CreateStackInput{
+func (c *Client) CreateStack(settings *aws.Settings) *string {
+	createResponse, err := c.client.CreateStackRequest(&cloudformation.CreateStackInput{
 		StackName:    settings.StackName,
 		Tags:         settings.Tags,
 		Parameters:   settings.Parameters,
 		TemplateBody: settings.TemplateBody,
 		OnFailure:    settings.OnFailure,
 		Capabilities: settings.Capabilities,
-	}).Send(clientContext)
+	}).Send(c.clientContext)
 
 	if err != nil {
 		panic("error creating stack," + err.Error())
 	}
 
-	err = client.WaitUntilStackCreateComplete(clientContext, &cloudformation.DescribeStacksInput{
+	err = c.client.WaitUntilStackCreateComplete(c.clientContext, &cloudformation.DescribeStacksInput{
 		StackName: createResponse.StackId,
 	})
 
@@ -77,16 +85,14 @@ func CreateStack(settings *Settings) *string {
 	return createResponse.StackId
 }
 
-func CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
-	settings := NewSettingsParams(paramFilePath, stackName, templatefilePath, nil)
-	stackId := CreateStack(settings)
+func (c *Client) CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
+	settings := aws.NewSettingsParams(paramFilePath, stackName, templatefilePath, nil)
+	stackId := c.CreateStack(settings)
 	return stackId
 }
 
-func activeCloudFormationStacks() ([]cloudformation.Stack) {
-	client, clientContext := cloudFormationClient()
-
-	stacks, err := client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{}).Send(clientContext)
+func (c *Client) activeCloudFormationStacks() []cloudformation.Stack {
+	stacks, err := c.client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{}).Send(c.clientContext)
 	//TODO: Do we need to paginate? (aws cli doesn't)
 	if err != nil {
 		panic("error getting stacks, " + err.Error())
