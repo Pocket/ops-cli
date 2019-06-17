@@ -28,6 +28,16 @@ jobs:
           path: ops-cli
           destination: ops-cli
 
+      - attach_workspace:
+          at: ./artifacts
+
+      - run: cp ops-cli ./artifacts/
+
+      - persist_to_workspace:
+          root: ./artifacts
+          paths:
+            - ops-cli
+
       - run:
           name: Setup Code Climate test-reporter
           command: |
