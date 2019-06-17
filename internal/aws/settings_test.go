@@ -60,9 +60,9 @@ func TestCloudFormationSettings(t *testing.T) {
 			cloudformation.CapabilityCapabilityNamedIam,
 			cloudformation.CapabilityCapabilityAutoExpand,
 		},
-		TemplateBody:     getString("file://test.yaml"),
+		TemplateBody:     getString("testbody"),
 		TimeoutInMinutes: getInt64(5),
-		StackName: 		getString("stackname"),
+		StackName:        getString("stackname"),
 	}
 
 	for k, value := range pocketSettings.Tags {
@@ -80,7 +80,6 @@ func TestCloudFormationSettings(t *testing.T) {
 	assert.DeepEqual(t, pocketSettings.TemplateBody, settings.TemplateBody)
 	assert.DeepEqual(t, pocketSettings.TimeoutInMinutes, settings.TimeoutInMinutes)
 	assert.DeepEqual(t, pocketSettings.StackName, settings.StackName)
-
 }
 
 func TestCloudFormationSettingsOmitting(t *testing.T) {
@@ -89,8 +88,7 @@ func TestCloudFormationSettingsOmitting(t *testing.T) {
 	settings := &Settings{
 		TemplateBody:     getString("file://test.yaml"),
 		TimeoutInMinutes: getInt64(5),
-		OnFailure: cloudformation.OnFailureDelete,
-
+		OnFailure:        cloudformation.OnFailureDelete,
 	}
 	assert.DeepEqual(t, pocketSettings.Parameters, []cloudformation.Parameter(nil))
 	assert.DeepEqual(t, pocketSettings.Tags, []cloudformation.Tag(nil))

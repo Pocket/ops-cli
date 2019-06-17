@@ -22,7 +22,7 @@ func NewSettings(jsonPath string) *Settings {
 	jsonFile, err := os.Open(jsonPath)
 	// if we os.Open returns an error then handle it
 	if err != nil {
-		panic("Error reading json file, " + jsonPath + ", " + err.Error())
+		panic("Error reading parameters file, " + jsonPath + ", " + err.Error())
 	}
 
 	// defer the closing of our jsonFile so that we can parse it later on
@@ -39,10 +39,15 @@ func NewSettings(jsonPath string) *Settings {
 	return &settings
 }
 
-
 func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath string, gitSHA *string) *Settings {
 	settings := NewSettings(paramFilePath)
-	settings.setName(stackName)
+	if settings.StackName != nil && stackName != nil {
+		stackName2 := *settings.StackName + *stackName
+		stackName = &stackName2
+	}
+	if stackName != nil {
+		settings.setName(stackName)
+	}
 	settings.setFilePath(templatefilePath)
 
 	if gitSHA != nil {
@@ -52,7 +57,7 @@ func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath
 	return settings
 }
 
-func (settings *Settings) setGitSHA(gitSHA *string)  {
+func (settings *Settings) setGitSHA(gitSHA *string) {
 	for _, tag := range settings.Tags {
 		if *tag.Key == "GitSHA" {
 			tag.Value = gitSHA
@@ -66,14 +71,14 @@ func (settings *Settings) setGitSHA(gitSHA *string)  {
 	}
 }
 
-func (settings *Settings) setName(stackName *string)  {
+func (settings *Settings) setName(stackName *string) {
 	settings.StackName = stackName
 }
 
-func (settings *Settings) setFilePath(filePath string)  {
+func (settings *Settings) setFilePath(filePath string) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		panic("Error reading json file, " + filePath + ", " + err.Error())
+		panic("Error reading template file, " + filePath + ", " + err.Error())
 	}
 	defer file.Close()
 
@@ -81,4 +86,3 @@ func (settings *Settings) setFilePath(filePath string)  {
 	template := string(byteValue)
 	settings.TemplateBody = &template
 }
-

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
+	"github.com/Pocket/ops-cli/internal/aws/ecs"
 	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 	"github.com/Pocket/ops-cli/internal/git"
 	"github.com/pkg/errors"
@@ -97,9 +98,14 @@ func addCommands(app *cli.App) {
 					Usage:  "The branch name",
 					EnvVar: "BRANCH_NAME",
 				},
+				cli.StringFlag{
+					Name:   "image-name, i",
+					Usage:  "The image name",
+					EnvVar: "IMAGE_NAME",
+				},
 			},
 			Action: func(c *cli.Context) error {
-
+				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
 				return nil
 			},
 		},
@@ -150,6 +156,36 @@ func addCommands(app *cli.App) {
 
 				stackName := c.String("stack-name")
 				cloudformationClient.CreateStackParams(c.String("param-file"), &stackName, c.String("template-file"))
+				return nil
+			},
+		},
+		{
+			Name:    "ecs-deploy",
+			Aliases: []string{"ed"},
+			Usage:   "ECS Deploy",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "cluster-name, c",
+					Usage:  "The cluster name",
+					EnvVar: "CLUSTER_NAME",
+				},
+				cli.StringFlag{
+					Name:   "service-name, s",
+					Usage:  "The service name",
+					EnvVar: "SERVICE_NAME",
+				},
+				cli.StringSliceFlag{
+					Name:   "image-names, i",
+					Usage:  "The image names",
+					EnvVar: "IMAGE_NAMES",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				ecsClient := ecs.New()
+				clusterName := c.String("cluster-name")
+				serviceName := c.String("cluster-name")
+				imageNames := c.StringSlice("image-names")
+				ecsClient.DeployUpdate(&clusterName, &serviceName, &imageNames)
 				return nil
 			},
 		},
