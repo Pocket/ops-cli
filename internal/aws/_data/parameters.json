@@ -51,5 +51,6 @@
     "CAPABILITY_AUTO_EXPAND"
   ],
   "template_body": "testbody",
-  "timeout_in_minutes": 5
+  "timeout_in_minutes": 5,
+  "ecs_cluster": "WebFeatureShared"
 }

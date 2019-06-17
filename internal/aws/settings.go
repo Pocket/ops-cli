@@ -15,6 +15,7 @@ type Settings struct {
 	Capabilities     []cloudformation.Capability `json:"capabilities,ommitempty"`
 	TemplateBody     *string                     `json:"template_body,ommitempty"`
 	TimeoutInMinutes *int64                      `json:"timeout_in_minutes,ommitempty"`
+	ECSCluster       *string                     `json:"ecs_cluster,ommitempty"`
 }
 
 func NewSettings(jsonPath string) *Settings {

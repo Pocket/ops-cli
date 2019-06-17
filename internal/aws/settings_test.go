@@ -63,6 +63,7 @@ func TestCloudFormationSettings(t *testing.T) {
 		TemplateBody:     getString("testbody"),
 		TimeoutInMinutes: getInt64(5),
 		StackName:        getString("stackname"),
+		ECSCluster:		  getString("WebFeatureShared"),
 	}
 
 	for k, value := range pocketSettings.Tags {
@@ -80,6 +81,8 @@ func TestCloudFormationSettings(t *testing.T) {
 	assert.DeepEqual(t, pocketSettings.TemplateBody, settings.TemplateBody)
 	assert.DeepEqual(t, pocketSettings.TimeoutInMinutes, settings.TimeoutInMinutes)
 	assert.DeepEqual(t, pocketSettings.StackName, settings.StackName)
+	assert.DeepEqual(t, pocketSettings.ECSCluster, settings.ECSCluster)
+
 }
 
 func TestCloudFormationSettingsOmitting(t *testing.T) {
@@ -93,6 +96,7 @@ func TestCloudFormationSettingsOmitting(t *testing.T) {
 	assert.DeepEqual(t, pocketSettings.Parameters, []cloudformation.Parameter(nil))
 	assert.DeepEqual(t, pocketSettings.Tags, []cloudformation.Tag(nil))
 	assert.DeepEqual(t, pocketSettings.StackName, (*string)(nil))
+	assert.DeepEqual(t, pocketSettings.ECSCluster, (*string)(nil))
 	assert.DeepEqual(t, pocketSettings.Capabilities, []cloudformation.Capability(nil))
 	assert.DeepEqual(t, pocketSettings.OnFailure, settings.OnFailure)
 	assert.DeepEqual(t, pocketSettings.TemplateBody, settings.TemplateBody)

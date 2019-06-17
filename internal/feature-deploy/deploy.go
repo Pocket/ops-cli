@@ -3,6 +3,7 @@ package feature_deploy
 import (
 	"github.com/Pocket/ops-cli/internal/aws"
 	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
+	"github.com/Pocket/ops-cli/internal/aws/ecs"
 	"github.com/Pocket/ops-cli/internal/util"
 )
 
@@ -16,14 +17,7 @@ func DeployBranch(parametersFile, templateFile, branchName, gitSHA, imageName st
 	if cloudformationClient.StackExists(*settings.StackName) {
 		cloudformationClient.CreateStack(settings)
 	} else {
-		deployECS(settings, imageName)
+		ecsClient := ecs.New()
+		ecsClient.DeployUpdate(settings.ECSCluster, &stackNameSuffix, &[]string{imageName})
 	}
-}
-
-func deployECS(settings *aws.Settings, imageName string) {
-
-}
-
-func deployStack() {
-
 }
