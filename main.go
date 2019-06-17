@@ -78,11 +78,6 @@ func addCommands(app *cli.App) {
 			Usage:   "Deploy a feature branch",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:   "stack-prefix, s",
-					Usage:  "The stack prefix for these deployments (WebFeatureDeploy-)",
-					EnvVar: "STACK_PREFIX",
-				},
-				cli.StringFlag{
 					Name:   "param-file, p",
 					Usage:  "The parameter file",
 					EnvVar: "PARAM_FILE",
