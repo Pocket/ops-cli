@@ -75,8 +75,9 @@ workflows:
   all:
     jobs:
       - build_&_test:
-          tags:
-            only: /^\d+\.\d+\.\d+$/
+          filters:
+            tags:
+              only: /^\d+\.\d+\.\d+$/
       - publish-github-release:
           requires:
             - build_&_test
