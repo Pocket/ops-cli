@@ -58,10 +58,10 @@ jobs:
           destination: coverage
 
   docker_build:
-    - setup_remote_docker
     docker:
       - image: circleci/buildpack-deps:scm
     steps:
+      - setup_remote_docker
       - run:
           name: "Docker Build"
           command: |
