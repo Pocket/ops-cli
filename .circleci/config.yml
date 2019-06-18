@@ -57,32 +57,20 @@ jobs:
           path: coverage
           destination: coverage
 
-  publish-github-release:
+  docker_build:
+    - setup_remote_docker
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/buildpack-deps:scm
     steps:
-      - attach_workspace:
-          at: ./artifacts
       - run:
-          name: "Publish Release on GitHub"
+          name: "Docker Build"
           command: |
-            go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./artifacts/ops-cli
-
+            docker build -t pocket/ops-cli:latest .
+      #TODO: Push to docker hub
 
 workflows:
   version: 2
   all:
     jobs:
-      - build_&_test:
-          filters:
-            tags:
-              only: /^\d+\.\d+\.\d+$/
-      - publish-github-release:
-          requires:
-            - build_&_test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^\d+\.\d+\.\d+$/
+      - build_&_test
+      - docker_build
