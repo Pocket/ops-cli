@@ -12,9 +12,9 @@ func DeployBranch(parametersFile, templateFile, branchName, gitSHA, imageName st
 
 	stackNameSuffix := util.DomainSafeString(branchName)
 
-	settings := aws.NewSettingsParams(parametersFile, &stackNameSuffix, templateFile, &gitSHA)
+	settings := aws.NewSettingsParams(parametersFile, &stackNameSuffix, templateFile, &gitSHA, &branchName)
 
-	if cloudformationClient.StackExists(*settings.StackName) {
+	if !cloudformationClient.StackExists(*settings.StackName) {
 		cloudformationClient.CreateStack(settings)
 	} else {
 		ecsClient := ecs.New()

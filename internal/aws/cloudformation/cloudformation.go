@@ -49,15 +49,15 @@ func (c *Client) DeleteStack(stackName string) {
 }
 
 func (c *Client) StackExists(stackName string) bool {
-	stack, err := c.client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{
+	_, err := c.client.DescribeStacksRequest(&cloudformation.DescribeStacksInput{
 		StackName: &stackName,
 	}).Send(c.clientContext)
 
 	if err != nil {
-		panic("error getting stack, " + err.Error())
+		return false
 	}
 
-	return len(stack.Stacks) > 0
+	return true
 }
 
 func (c *Client) CreateStack(settings *aws.Settings) *string {
@@ -86,7 +86,7 @@ func (c *Client) CreateStack(settings *aws.Settings) *string {
 }
 
 func (c *Client) CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
-	settings := aws.NewSettingsParams(paramFilePath, stackName, templatefilePath, nil)
+	settings := aws.NewSettingsParams(paramFilePath, stackName, templatefilePath, nil, nil)
 	stackId := c.CreateStack(settings)
 	return stackId
 }

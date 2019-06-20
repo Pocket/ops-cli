@@ -40,7 +40,7 @@ func NewSettings(jsonPath string) *Settings {
 	return &settings
 }
 
-func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath string, gitSHA *string) *Settings {
+func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath string, gitSHA *string, branchName *string) *Settings {
 	settings := NewSettings(paramFilePath)
 	if settings.StackName != nil && stackName != nil {
 		stackName2 := *settings.StackName + *stackName
@@ -55,19 +55,35 @@ func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath
 		settings.setGitSHA(gitSHA)
 	}
 
+	if branchName != nil {
+		settings.setBranchName(branchName)
+	}
+
 	return settings
 }
 
 func (settings *Settings) setGitSHA(gitSHA *string) {
-	for _, tag := range settings.Tags {
-		if *tag.Key == "GitSHA" {
-			tag.Value = gitSHA
+	settings.replaceTag("GitSHA", gitSHA)
+	settings.replaceParameter("GitSHA", gitSHA)
+}
+
+func (settings *Settings) setBranchName(branchName *string) {
+	settings.replaceTag("BranchName", branchName)
+	settings.replaceParameter("BranchName", branchName)
+}
+
+func (settings *Settings) replaceParameter(key string, value *string) {
+	for _, parameter := range settings.Parameters {
+		if *parameter.ParameterKey == key {
+			parameter.ParameterValue = value
 		}
 	}
+}
 
-	for _, parameter := range settings.Parameters {
-		if *parameter.ParameterKey == "GitSHA" {
-			parameter.ParameterValue = gitSHA
+func (settings *Settings) replaceTag(key string, value *string) {
+	for _, tag := range settings.Tags {
+		if *tag.Key == key {
+			tag.Value = value
 		}
 	}
 }
