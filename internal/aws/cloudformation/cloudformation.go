@@ -86,7 +86,7 @@ func (c *Client) CreateStack(settings *aws.Settings) *string {
 }
 
 func (c *Client) CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
-	settings := aws.NewSettingsParams(paramFilePath, stackName, templatefilePath, nil, nil)
+	settings := aws.NewSettingsParams(paramFilePath, stackName, templatefilePath, nil)
 	stackId := c.CreateStack(settings)
 	return stackId
 }

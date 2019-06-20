@@ -40,7 +40,7 @@ func NewSettings(jsonPath string) *Settings {
 	return &settings
 }
 
-func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath string, gitSHA *string, branchName *string) *Settings {
+func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath string, gitSHA *string) *Settings {
 	settings := NewSettings(paramFilePath)
 	if settings.StackName != nil && stackName != nil {
 		stackName2 := *settings.StackName + *stackName
@@ -55,8 +55,8 @@ func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath
 		settings.setGitSHA(gitSHA)
 	}
 
-	if branchName != nil {
-		settings.setBranchName(branchName)
+	if stackName != nil {
+		settings.setBranchName(stackName)
 	}
 
 	return settings
@@ -73,19 +73,27 @@ func (settings *Settings) setBranchName(branchName *string) {
 }
 
 func (settings *Settings) replaceParameter(key string, value *string) {
+	var parameters []cloudformation.Parameter
+
 	for _, parameter := range settings.Parameters {
 		if *parameter.ParameterKey == key {
 			parameter.ParameterValue = value
 		}
+		parameters = append(parameters, parameter)
 	}
+	settings.Parameters = parameters
 }
 
 func (settings *Settings) replaceTag(key string, value *string) {
+	var tags []cloudformation.Tag
+
 	for _, tag := range settings.Tags {
 		if *tag.Key == key {
 			tag.Value = value
 		}
+		tags = append(tags, tag)
 	}
+	settings.Tags = tags
 }
 
 func (settings *Settings) setName(stackName *string) {
