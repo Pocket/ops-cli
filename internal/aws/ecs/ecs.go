@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"context"
+	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
 	"github.com/dnaeon/go-vcr/recorder"
@@ -133,6 +134,10 @@ func (c *Client) getLatestDeployment(cluster, service *string) (*ecs.Deployment,
 	output, err := c.client.DescribeServicesRequest(input).Send(c.clientContext)
 	if err != nil {
 		return nil, err
+	}
+	
+	if len(output.Services) == 0 {
+		return nil, errors.New("No active ecs services")
 	}
 
 	ds := output.Services[0].Deployments
