@@ -84,6 +84,15 @@ func (settings *Settings) replaceParameter(key string, value *string) {
 	settings.Parameters = parameters
 }
 
+func (settings *Settings) getParameter(key string) *string {
+	for _, parameter := range settings.Parameters {
+		if *parameter.ParameterKey == key {
+			return parameter.ParameterValue
+		}
+	}
+	return nil
+}
+
 func (settings *Settings) replaceTag(key string, value *string) {
 	var tags []cloudformation.Tag
 
@@ -98,6 +107,21 @@ func (settings *Settings) replaceTag(key string, value *string) {
 
 func (settings *Settings) setName(stackName *string) {
 	settings.StackName = stackName
+}
+
+func (settings *Settings) getBaseUrl() *string {
+	return settings.getParameter("DomainBase")
+}
+
+func (settings *Settings) GetDeployUrl() *string {
+	base := settings.getParameter("DomainBase")
+	formattedBranch := settings.getParameter("BranchName")
+	if base == nil || formattedBranch == nil {
+		return nil
+	}
+
+	url := *formattedBranch + "." + *base
+	return &url
 }
 
 func (settings *Settings) setFilePath(filePath string) {

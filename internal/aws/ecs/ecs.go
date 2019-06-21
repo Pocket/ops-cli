@@ -135,7 +135,7 @@ func (c *Client) getLatestDeployment(cluster, service *string) (*ecs.Deployment,
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if len(output.Services) == 0 {
 		return nil, errors.New("No active ecs services")
 	}

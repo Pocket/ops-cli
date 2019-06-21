@@ -103,9 +103,14 @@ func addCommands(app *cli.App) {
 					Usage:  "The image name",
 					EnvVar: "IMAGE_NAME",
 				},
+				cli.StringFlag{
+					Name:   "slack-webhook, s",
+					Usage:  "The image name",
+					EnvVar: "SLACK_WEBHOOK",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
+				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"), c.String("slack-webhook"))
 				return nil
 			},
 		},
