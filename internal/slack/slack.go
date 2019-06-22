@@ -9,18 +9,18 @@ import (
 )
 
 type Attachment struct {
-	Color     string `json:"text"`
-	Fallback  string `json:"text"`
-	Title     string `json:"text"`
-	TitleLink string `json:"text"`
+	Color     string `json:"color"`
+	Fallback  string `json:"fallback"`
+	Title     string `json:"title"`
+	TitleLink string `json:"title_link"`
 }
 
 type Request struct {
-	Text        string `json:"text"`
-	Username    string `json:"text"`
-	Channel     string `json:"text"`
-	IconEmoji   string `json:"text"`
-	Attachments []Attachment
+	Text        string       `json:"text"`
+	Username    string       `json:"username"`
+	Channel     string       `json:"channel"`
+	IconEmoji   string       `json:"icon_emoji"`
+	Attachments []Attachment `json:"attachments"`
 }
 
 // SendSlackNotification will post to an 'Incoming Webook' url setup in Slack Apps. It accepts
@@ -43,8 +43,9 @@ func (requestBody *Request) SendSlackNotification(webhookUrl string) error {
 
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
-	if buf.String() != "ok" {
-		return errors.New("Non-ok response returned from Slack")
+	response := buf.String()
+	if response != "ok" {
+		return errors.New("Non-ok response returned from Slack: " + response)
 	}
 	return nil
 }

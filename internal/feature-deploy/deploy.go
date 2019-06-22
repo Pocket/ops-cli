@@ -24,7 +24,7 @@ func DeployBranch(parametersFile, templateFile, branchName, gitSHA, imageName st
 
 	text := "Completed deploy of " + gitSHA + " - *" + branchName + "*"
 
-	slackRequest := slack.NewSlackRequest("Buster", "#log-feature-deploys", ":ship", text, "#36a64f", *settings.GetDeployUrl(), *settings.GetDeployUrl(), *settings.GetDeployUrl())
+	slackRequest := slack.NewSlackRequest("Buster", "#log-feature-deploys", ":ship:", text, "#36a64f", *settings.GetDeployUrl(), *settings.GetDeployUrl(), *settings.GetDeployUrl())
 	err := slackRequest.SendSlackNotification(slackWebhook)
 	if err != nil {
 		panic("Error notifying slack: " + err.Error())

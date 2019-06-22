@@ -42,6 +42,12 @@ func NewSettings(jsonPath string) *Settings {
 
 func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath string, gitSHA *string) *Settings {
 	settings := NewSettings(paramFilePath)
+
+	if stackName != nil {
+		branchName := *stackName
+		settings.setBranchName(&branchName)
+	}
+
 	if settings.StackName != nil && stackName != nil {
 		stackName2 := *settings.StackName + *stackName
 		stackName = &stackName2
@@ -53,10 +59,6 @@ func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath
 
 	if gitSHA != nil {
 		settings.setGitSHA(gitSHA)
-	}
-
-	if stackName != nil {
-		settings.setBranchName(stackName)
 	}
 
 	return settings
@@ -120,7 +122,7 @@ func (settings *Settings) GetDeployUrl() *string {
 		return nil
 	}
 
-	url := *formattedBranch + "." + *base
+	url := "https://" + *formattedBranch + "." + *base
 	return &url
 }
 

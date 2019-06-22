@@ -93,6 +93,10 @@ func (c *Client) registerTaskDefinition(task *string, images *[]string) (string,
 		PlacementConstraints: output.TaskDefinition.PlacementConstraints,
 		TaskRoleArn:          output.TaskDefinition.TaskRoleArn,
 		Volumes:              output.TaskDefinition.Volumes,
+		Memory:               output.TaskDefinition.Memory,
+		Cpu:                  output.TaskDefinition.Cpu,
+		ExecutionRoleArn:     output.TaskDefinition.ExecutionRoleArn,
+		Tags:                 output.Tags,
 	}
 	resp, err := c.client.RegisterTaskDefinitionRequest(input).Send(c.clientContext)
 	if err != nil {
@@ -107,7 +111,7 @@ func (c *Client) updateService(cluster, service *string, count *int64, arn *stri
 		Cluster: cluster,
 		Service: service,
 	}
-	if *count != -1 {
+	if count != nil && *count != -1 {
 		input.DesiredCount = count
 	}
 	if arn != nil {
@@ -119,10 +123,9 @@ func (c *Client) updateService(cluster, service *string, count *int64, arn *stri
 
 // Wait waits for the service to finish being updated.
 func (c *Client) wait(cluster, service, arn *string) error {
-	return c.client.WaitUntilTasksRunning(c.clientContext, &ecs.DescribeTasksInput{
-		Tasks: []string{
-			*arn,
-		},
+	return c.client.WaitUntilServicesStable(c.clientContext, &ecs.DescribeServicesInput{
+		Cluster:  cluster,
+		Services: []string{*service},
 	})
 }
 
