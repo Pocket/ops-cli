@@ -2,7 +2,6 @@ package cloudformation
 
 import (
 	"context"
-	"fmt"
 	"github.com/Pocket/ops-cli/internal/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
@@ -62,9 +61,6 @@ func (c *Client) StackExists(stackName string) bool {
 }
 
 func (c *Client) CreateStack(settings *aws.Settings) *string {
-
-	fmt.Println(settings)
-
 	createResponse, err := c.client.CreateStackRequest(&cloudformation.CreateStackInput{
 		StackName:    settings.StackName,
 		Tags:         settings.Tags,

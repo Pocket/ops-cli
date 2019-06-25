@@ -123,7 +123,7 @@ func (settings *Settings) getBaseUrl() *string {
 
 func (settings *Settings) GetDeployUrl() *string {
 	base := settings.getParameter("DomainBase")
-	formattedBranch := settings.getParameter("BranchName")
+	formattedBranch := settings.getParameter("FormattedBranchName")
 	if base == nil || formattedBranch == nil {
 		return nil
 	}

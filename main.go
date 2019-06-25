@@ -114,12 +114,12 @@ func addCommands(app *cli.App) {
 					EnvVar: "SLACK_WEBHOOK",
 				},
 				cli.StringFlag{
-					Name:   "github-username, g",
+					Name:   "github-username, u",
 					Usage:  "The github username",
 					EnvVar: "GITHUB_USERNAME",
 				},
 				cli.StringFlag{
-					Name:   "github-compare-url, g",
+					Name:   "github-compare-url, cu",
 					Usage:  "The github compare-url",
 					EnvVar: "GITHUB_COMPARE_URL",
 				},
