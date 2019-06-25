@@ -3,17 +3,25 @@ package feature_deploy
 import (
 	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
 	"github.com/Pocket/ops-cli/internal/git"
+	"github.com/Pocket/ops-cli/internal/slack"
 	"github.com/Pocket/ops-cli/internal/util"
 )
 
-func CleanUpBranches(prefix string) {
+func CleanUpBranches(prefix string, slackWebhook string) {
 	client := cloudformation.New()
 
 	branchesToDelete := BranchesToDelete(prefix)
 
 	for _, branchName := range branchesToDelete {
 		client.DeleteStack(stackNameFromBranchName(prefix, branchName))
-		//TODO: Notify Slack
+
+		text := "Cleaned up " + branchName + "*"
+
+		slackRequest := slack.NewSlackRequestText("Damage Control", "#log-feature-deploys", ":cleanup:", text)
+		err := slackRequest.SendSlackNotification(slackWebhook)
+		if err != nil {
+			panic("Error notifying slack: " + err.Error())
+		}
 	}
 }
 

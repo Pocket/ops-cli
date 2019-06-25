@@ -66,3 +66,12 @@ func NewSlackRequest(username string, channel string, iconEmoji string, text str
 		},
 	}
 }
+
+func NewSlackRequestText(username string, channel string, iconEmoji string, text string) *Request {
+	return &Request{
+		Username:  username,
+		Channel:   channel,
+		IconEmoji: iconEmoji,
+		Text:      text,
+	}
+}

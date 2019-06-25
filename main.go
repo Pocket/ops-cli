@@ -56,6 +56,11 @@ func addCommands(app *cli.App) {
 					Usage:  "Perform a dry run, true by default",
 					EnvVar: "DRY_RUN",
 				},
+				cli.StringFlag{
+					Name:   "slack-webhook, s",
+					Usage:  "The slack webhook",
+					EnvVar: "SLACK_WEBHOOK",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				stackPrefix := c.String("stack-prefix")
@@ -69,7 +74,7 @@ func addCommands(app *cli.App) {
 					return nil
 				}
 
-				featureDeploy.CleanUpBranches(stackPrefix)
+				featureDeploy.CleanUpBranches(stackPrefix, c.String("slack-webhook"))
 				return nil
 			},
 		},
@@ -108,9 +113,19 @@ func addCommands(app *cli.App) {
 					Usage:  "The image name",
 					EnvVar: "SLACK_WEBHOOK",
 				},
+				cli.StringFlag{
+					Name:   "github-username, g",
+					Usage:  "The github username",
+					EnvVar: "GITHUB_USERNAME",
+				},
+				cli.StringFlag{
+					Name:   "github-compare-url, g",
+					Usage:  "The github compare-url",
+					EnvVar: "GITHUB_COMPARE_URL",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"), c.String("slack-webhook"))
+				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
 				return nil
 			},
 		},

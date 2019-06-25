@@ -25,6 +25,10 @@
       "ParameterValue": "feature-deploys"
     },
     {
+      "ParameterKey": "FormattedBranchName",
+      "ParameterValue": "feature-deploys"
+    },
+    {
       "ParameterKey": "GitSHA",
       "ParameterValue": "latest"
     }

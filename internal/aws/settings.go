@@ -40,25 +40,26 @@ func NewSettings(jsonPath string) *Settings {
 	return &settings
 }
 
-func NewSettingsParams(paramFilePath string, stackName *string, templatefilePath string, gitSHA *string) *Settings {
+func NewSettingsParams(paramFilePath string, templatefilePath string, gitSHA *string, branchName *string, formattedBranchName *string) *Settings {
 	settings := NewSettings(paramFilePath)
 
-	if stackName != nil {
-		branchName := *stackName
-		settings.setBranchName(&branchName)
+	if settings.StackName != nil && formattedBranchName != nil {
+		stackName2 := *settings.StackName + *formattedBranchName
+		settings.setName(&stackName2)
 	}
 
-	if settings.StackName != nil && stackName != nil {
-		stackName2 := *settings.StackName + *stackName
-		stackName = &stackName2
-	}
-	if stackName != nil {
-		settings.setName(stackName)
-	}
 	settings.setFilePath(templatefilePath)
 
 	if gitSHA != nil {
 		settings.setGitSHA(gitSHA)
+	}
+
+	if formattedBranchName != nil {
+		settings.setFormattedBranchName(formattedBranchName)
+	}
+
+	if branchName != nil {
+		settings.setBranchName(branchName)
 	}
 
 	return settings
@@ -72,6 +73,11 @@ func (settings *Settings) setGitSHA(gitSHA *string) {
 func (settings *Settings) setBranchName(branchName *string) {
 	settings.replaceTag("BranchName", branchName)
 	settings.replaceParameter("BranchName", branchName)
+}
+
+func (settings *Settings) setFormattedBranchName(branchName *string) {
+	settings.replaceTag("FormattedBranchName", branchName)
+	settings.replaceParameter("FormattedBranchName", branchName)
 }
 
 func (settings *Settings) replaceParameter(key string, value *string) {
