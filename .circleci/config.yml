@@ -62,6 +62,7 @@ jobs:
       - image: circleci/buildpack-deps:scm
     steps:
       - setup_remote_docker
+      - checkout
       - run:
           name: "Docker Build"
           command: |

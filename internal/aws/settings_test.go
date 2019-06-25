@@ -36,6 +36,10 @@ func TestCloudFormationSettings(t *testing.T) {
 				ParameterValue: getString("feature-deploys"),
 			},
 			{
+				ParameterKey:   getString("FormattedBranchName"),
+				ParameterValue: getString("feature-deploys"),
+			},
+			{
 				ParameterKey:   getString("GitSHA"),
 				ParameterValue: getString("latest"),
 			},
@@ -63,7 +67,7 @@ func TestCloudFormationSettings(t *testing.T) {
 		TemplateBody:     getString("testbody"),
 		TimeoutInMinutes: getInt64(5),
 		StackName:        getString("stackname"),
-		ECSCluster:		  getString("WebFeatureShared"),
+		ECSCluster:       getString("WebFeatureShared"),
 	}
 
 	for k, value := range pocketSettings.Tags {
