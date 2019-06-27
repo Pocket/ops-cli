@@ -108,6 +108,37 @@ func addCommands(app *cli.App) {
 					Usage:  "The image name",
 					EnvVar: "IMAGE_NAME",
 				},
+			},
+			Action: func(c *cli.Context) error {
+				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
+				return nil
+			},
+		},
+		{
+			Name:    "feature-deploy-notify",
+			Aliases: []string{"fd"},
+			Usage:   "Notify about a feature branch",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "param-file, p",
+					Usage:  "The parameter file",
+					EnvVar: "PARAM_FILE",
+				},
+				cli.StringFlag{
+					Name:   "template-file, t",
+					Usage:  "The template file",
+					EnvVar: "TEMPLATE_FILE",
+				},
+				cli.StringFlag{
+					Name:   "git-sha, g",
+					Usage:  "The git sha",
+					EnvVar: "GIT_SHA",
+				},
+				cli.StringFlag{
+					Name:   "branch-name, b",
+					Usage:  "The branch name",
+					EnvVar: "BRANCH_NAME",
+				},
 				cli.StringFlag{
 					Name:   "slack-webhook, s",
 					Usage:  "The image name",
@@ -125,7 +156,7 @@ func addCommands(app *cli.App) {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
+				featureDeploy.NotifyDeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
 				return nil
 			},
 		},
