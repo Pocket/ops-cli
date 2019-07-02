@@ -78,16 +78,19 @@ func (c *Client) registerTaskDefinition(task *string, images *[]string) (string,
 		return "", err
 	}
 
+	var definitions []ecs.ContainerDefinition
+
 	for _, d := range output.TaskDefinition.ContainerDefinitions {
 		for _, image := range *images {
 			imageName := strings.Split(image, ":")[0]
 			if strings.HasPrefix(*d.Image, imageName) {
 				d.Image = &image
 			}
+			definitions = append(definitions, d)
 		}
 	}
 	input := &ecs.RegisterTaskDefinitionInput{
-		ContainerDefinitions: output.TaskDefinition.ContainerDefinitions,
+		ContainerDefinitions: definitions,
 		Family:               output.TaskDefinition.Family,
 		NetworkMode:          output.TaskDefinition.NetworkMode,
 		PlacementConstraints: output.TaskDefinition.PlacementConstraints,
@@ -98,6 +101,7 @@ func (c *Client) registerTaskDefinition(task *string, images *[]string) (string,
 		ExecutionRoleArn:     output.TaskDefinition.ExecutionRoleArn,
 		Tags:                 output.Tags,
 	}
+
 	resp, err := c.client.RegisterTaskDefinitionRequest(input).Send(c.clientContext)
 	if err != nil {
 		return "", err
