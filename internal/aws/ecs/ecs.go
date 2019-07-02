@@ -80,7 +80,7 @@ func (c *Client) registerTaskDefinition(task *string, images *[]string) (string,
 
 	for _, d := range output.TaskDefinition.ContainerDefinitions {
 		for _, image := range *images {
-			imageName := strings.SplitN(image, ":", 1)[0]
+			imageName := strings.Split(image, ":")[0]
 			if strings.HasPrefix(*d.Image, imageName) {
 				d.Image = &image
 			}
