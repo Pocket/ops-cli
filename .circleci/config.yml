@@ -65,15 +65,16 @@ workflows:
   all:
     jobs:
       - build_and_test
-      - docker/publish:
+      - docker_build:
           deploy: false
-          image: pocket/ops-cli:latest
+          image: pocket/ops-cli
           filters:
             branches:
               ignore:
                 - master
-      - docker/publish:
-          image: pocket/ops-cli:latest
+      - docker_publish:
+          image: pocket/ops-cli
+          tag: latest
           filters:
             branches:
               only:
