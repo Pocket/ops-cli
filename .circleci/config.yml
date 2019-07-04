@@ -1,4 +1,8 @@
-version: 2
+version: 2.1
+
+orbs:
+  docker: circleci/docker@0.5.2
+
 
 jobs:
   build_&_test:
@@ -67,11 +71,30 @@ jobs:
           name: "Docker Build"
           command: |
             docker build -t pocket/ops-cli:latest .
-      #TODO: Push to docker hub
+
+  build-docker-image-only:
+    jobs:
+      - docker/publish:
+          deploy: false
+          image: pocket/ops-cli:latest
+
+  build-and-publish-docker-image:
+    jobs:
+      - docker/publish:
+          image: pocket/ops-cli:latest
 
 workflows:
   version: 2
   all:
     jobs:
       - build_&_test
-      - docker_build
+      - build-docker-image-only:
+          filters:
+            branches:
+              ignore:
+                - master
+      - build-and-publish-docker-image:
+          filters:
+            branches:
+              only:
+                - master
