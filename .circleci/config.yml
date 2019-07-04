@@ -5,7 +5,7 @@ orbs:
 
 
 jobs:
-  build_&_test:
+  build_and_test:
     docker:
       - image: circleci/golang:1.12
     steps:
@@ -61,39 +61,19 @@ jobs:
           path: coverage
           destination: coverage
 
-  docker_build:
-    docker:
-      - image: circleci/buildpack-deps:scm
-    steps:
-      - setup_remote_docker
-      - checkout
-      - run:
-          name: "Docker Build"
-          command: |
-            docker build -t pocket/ops-cli:latest .
-
-  build-docker-image-only:
+workflows:
+  all:
     jobs:
+      - build_and_test
       - docker/publish:
           deploy: false
           image: pocket/ops-cli:latest
-
-  build-and-publish-docker-image:
-    jobs:
-      - docker/publish:
-          image: pocket/ops-cli:latest
-
-workflows:
-  version: 2
-  all:
-    jobs:
-      - build_&_test
-      - build-docker-image-only:
           filters:
             branches:
               ignore:
                 - master
-      - build-and-publish-docker-image:
+      - docker/publish:
+          image: pocket/ops-cli:latest
           filters:
             branches:
               only:
