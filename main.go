@@ -61,11 +61,19 @@ func addCommands(app *cli.App) {
 					Usage:  "The slack webhook",
 					EnvVar: "SLACK_WEBHOOK",
 				},
+				cli.IntFlag{
+					Name:   "days-old, do",
+					Usage:  "The days old",
+					EnvVar: "DAYS_OLD",
+					Value:  8,
+				},
 			},
 			Action: func(c *cli.Context) error {
 				stackPrefix := c.String("stack-prefix")
+				olderThanDate := time.Now().AddDate(0, 0, -c.Int("days-old"))
+
 				if c.BoolT("dry-run") {
-					stackBranchNames := featureDeploy.BranchesToDelete(stackPrefix)
+					stackBranchNames := featureDeploy.BranchesToDelete(stackPrefix, olderThanDate)
 
 					for _, stackBranchName := range stackBranchNames {
 						fmt.Println(stackBranchName)
@@ -74,7 +82,7 @@ func addCommands(app *cli.App) {
 					return nil
 				}
 
-				featureDeploy.CleanUpBranches(stackPrefix, c.String("slack-webhook"))
+				featureDeploy.CleanUpBranches(stackPrefix, c.String("slack-webhook"), olderThanDate)
 				return nil
 			},
 		},
