@@ -5,17 +5,18 @@ import (
 	"github.com/Pocket/ops-cli/internal/git"
 	"github.com/Pocket/ops-cli/internal/slack"
 	"github.com/Pocket/ops-cli/internal/util"
+	"time"
 )
 
-func CleanUpBranches(prefix string, slackWebhook string) {
+func CleanUpBranches(prefix string, slackWebhook string, olderThanDate time.Time) {
 	client := cloudformation.New()
 
-	branchesToDelete := BranchesToDelete(prefix)
+	branchesToDelete := BranchesToDelete(prefix, olderThanDate)
 
 	for _, branchName := range branchesToDelete {
 		client.DeleteStack(stackNameFromBranchName(prefix, branchName))
 
-		text := "Cleaned up " + branchName + "*"
+		text := "Cleaned up *" + branchName + "*"
 
 		slackRequest := slack.NewSlackRequestText("Damage Control", "#log-feature-deploys", ":cleanup:", text)
 		err := slackRequest.SendSlackNotification(slackWebhook)
@@ -25,12 +26,12 @@ func CleanUpBranches(prefix string, slackWebhook string) {
 	}
 }
 
-func BranchesToDelete(prefix string) []string {
+func BranchesToDelete(prefix string, olderThanDate time.Time) []string {
 	client := cloudformation.New()
 
 	stackBranchNames := client.ActiveCloudFormationStackBranchesWithPrefix(prefix)
 
-	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames()
+	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames(olderThanDate)
 
 	var branchesToClean []string
 
