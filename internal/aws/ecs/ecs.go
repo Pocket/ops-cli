@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
-	"github.com/dnaeon/go-vcr/recorder"
 	"strings"
 )
 
@@ -54,18 +53,7 @@ func ecsClient() (*ecs.Client, context.Context) {
 	if err != nil {
 		panic("unable to load SDK config, " + err.Error())
 	}
-	cfg.HTTPClient.Transport = awsECSRecorder()
 	return ecs.New(cfg), context.Background()
-}
-
-func awsECSRecorder() *recorder.Recorder {
-	r, err := recorder.New("_fixtures/ecs")
-	if err != nil {
-		panic(err)
-	}
-	defer r.Stop() // Make sure recorder is stopped once done with it
-
-	return r
 }
 
 // RegisterTaskDefinition updates the existing task definition's image.
