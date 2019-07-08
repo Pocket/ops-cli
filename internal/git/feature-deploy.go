@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-func GetActiveAndUnactiveBranchNames() ([]string, []string) {
-	activeBranches, unactiveBranches := getActiveAndUnactiveBranches()
+func GetActiveAndUnactiveBranchNames(olderThanDate time.Time) ([]string, []string) {
+	activeBranches, unactiveBranches := getActiveAndUnactiveBranches(olderThanDate)
 	return getBranchShortNames(activeBranches), getBranchShortNames(unactiveBranches)
 }
 
 /**
  * Gets the active and unactive branch refs
  */
-func getActiveAndUnactiveBranches() ([]*plumbing.Reference, []*plumbing.Reference) {
+func getActiveAndUnactiveBranches(olderThanDate time.Time) ([]*plumbing.Reference, []*plumbing.Reference) {
 	r := repo(".")
 
 	refs, err := r.References()
@@ -24,8 +24,6 @@ func getActiveAndUnactiveBranches() ([]*plumbing.Reference, []*plumbing.Referenc
 	}
 
 	masterReference := master(r)
-
-	eightDaysAgo := time.Now().AddDate(0, 0, -8)
 
 	var activeBranches []*plumbing.Reference
 	var unactiveBranches []*plumbing.Reference
@@ -47,7 +45,7 @@ func getActiveAndUnactiveBranches() ([]*plumbing.Reference, []*plumbing.Referenc
 		}
 
 		lastCommitTime := commit.Author.When
-		if lastCommitTime.After(eightDaysAgo) {
+		if lastCommitTime.After(olderThanDate) {
 			activeBranches = append(activeBranches, ref)
 		} else {
 			unactiveBranches = append(unactiveBranches, ref)
