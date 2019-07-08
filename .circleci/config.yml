@@ -1,7 +1,19 @@
-version: 2
+version: 2.1
+
+orbs:
+  docker: circleci/docker@0.5.2
+
 
 jobs:
-  build_&_test:
+  check-and-build-only:
+    executor: docker/machine
+    steps:
+      - checkout
+      - docker/check
+      - docker/build:
+          image: pocket/ops-cli
+
+  build_and_test:
     docker:
       - image: circleci/golang:1.12
     steps:
@@ -57,21 +69,19 @@ jobs:
           path: coverage
           destination: coverage
 
-  docker_build:
-    docker:
-      - image: circleci/buildpack-deps:scm
-    steps:
-      - setup_remote_docker
-      - checkout
-      - run:
-          name: "Docker Build"
-          command: |
-            docker build -t pocket/ops-cli:latest .
-      #TODO: Push to docker hub
-
 workflows:
-  version: 2
   all:
     jobs:
-      - build_&_test
-      - docker_build
+      - build_and_test
+      - check-and-build-only:
+          filters:
+            branches:
+              ignore:
+                - master
+      - docker/publish:
+          image: pocket/ops-cli
+          tag: latest
+          filters:
+            branches:
+              only:
+                - master
