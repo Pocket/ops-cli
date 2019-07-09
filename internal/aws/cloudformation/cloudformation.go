@@ -5,7 +5,6 @@ import (
 	"github.com/Pocket/ops-cli/internal/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
-	"github.com/dnaeon/go-vcr/recorder"
 	"strings"
 )
 
@@ -110,16 +109,8 @@ func cloudFormationClient() (*cloudformation.Client, context.Context) {
 	if err != nil {
 		panic("unable to load SDK config, " + err.Error())
 	}
-	cfg.HTTPClient.Transport = awsCloudformationRecorder()
-	return cloudformation.New(cfg), context.Background()
-}
 
-func awsCloudformationRecorder() *recorder.Recorder {
-	r, err := recorder.New("_fixtures/cloudformation")
-	if err != nil {
-		panic(err)
-	}
-	defer r.Stop() // Make sure recorder is stopped once done with it
+	client := cloudformation.New(cfg)
 
-	return r
+	return client, context.Background()
 }
