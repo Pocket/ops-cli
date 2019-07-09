@@ -1,4 +1,4 @@
-package aws
+package settings
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
@@ -84,9 +84,20 @@ func TestCloudFormationSettings(t *testing.T) {
 	assert.DeepEqual(t, pocketSettings.Capabilities, settings.Capabilities)
 	assert.DeepEqual(t, pocketSettings.TemplateBody, settings.TemplateBody)
 	assert.DeepEqual(t, pocketSettings.TimeoutInMinutes, settings.TimeoutInMinutes)
-	assert.DeepEqual(t, pocketSettings.StackName, settings.StackName)
-	assert.DeepEqual(t, pocketSettings.ECSCluster, settings.ECSCluster)
+	assert.DeepEqual(t, pocketSettings.StackPrefix, settings.StackPrefix)
 
+	assert.DeepEqual(t, pocketSettings.SlackCleanUpSettings.Icon, ":cleanup:")
+	assert.DeepEqual(t, pocketSettings.SlackCleanUpSettings.Username, "Damage Control")
+	assert.DeepEqual(t, pocketSettings.SlackCleanUpSettings.Channel, "#log-feature-deploys")
+
+	assert.DeepEqual(t, pocketSettings.SlackDeploySettings.Icon, ":ship:")
+	assert.DeepEqual(t, pocketSettings.SlackDeploySettings.Username, "Buster")
+	assert.DeepEqual(t, pocketSettings.SlackDeploySettings.Channel, "#log-feature-deploys")
+
+	assert.Assert(t, pocketSettings.StackName == nil)
+	assert.Assert(t, pocketSettings.FormattedBranchName == nil)
+	assert.Assert(t, pocketSettings.GitSHA == nil)
+	assert.Assert(t, pocketSettings.BranchName == nil)
 }
 
 func TestCloudFormationSettingsOmitting(t *testing.T) {

@@ -14,10 +14,13 @@ type Client struct {
 }
 
 func New() *Client {
-	client, clientContext := ecsClient()
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		panic("unable to load SDK config, " + err.Error())
+	}
 	return &Client{
-		client:        client,
-		clientContext: clientContext,
+		client:        ecs.New(cfg),
+		clientContext: context.Background(),
 	}
 }
 
@@ -43,17 +46,6 @@ func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNam
 	if err != nil {
 		panic("error waiting for the service, " + err.Error())
 	}
-}
-
-func ecsClient() (*ecs.Client, context.Context) {
-	// Using the SDK's default configuration, loading additional config
-	// and credentials values from the environment variables, shared
-	// credentials, and shared configuration files
-	cfg, err := external.LoadDefaultAWSConfig()
-	if err != nil {
-		panic("unable to load SDK config, " + err.Error())
-	}
-	return ecs.New(cfg), context.Background()
 }
 
 // RegisterTaskDefinition updates the existing task definition's image.

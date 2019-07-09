@@ -2,7 +2,7 @@ package cloudformation
 
 import (
 	"context"
-	"github.com/Pocket/ops-cli/internal/aws"
+	settings2 "github.com/Pocket/ops-cli/internal/settings"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"strings"
@@ -14,10 +14,14 @@ type Client struct {
 }
 
 func New() *Client {
-	client, clientContext := cloudFormationClient()
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		panic("unable to load SDK config, " + err.Error())
+	}
+
 	return &Client{
-		client:        client,
-		clientContext: clientContext,
+		client:        cloudformation.New(cfg),
+		clientContext: context.Background(),
 	}
 }
 
@@ -59,15 +63,8 @@ func (c *Client) StackExists(stackName string) bool {
 	return true
 }
 
-func (c *Client) CreateStack(settings *aws.Settings) *string {
-	createResponse, err := c.client.CreateStackRequest(&cloudformation.CreateStackInput{
-		StackName:    settings.StackName,
-		Tags:         settings.Tags,
-		Parameters:   settings.Parameters,
-		TemplateBody: settings.TemplateBody,
-		OnFailure:    settings.OnFailure,
-		Capabilities: settings.Capabilities,
-	}).Send(c.clientContext)
+func (c *Client) CreateStack(settings *cloudformation.CreateStackInput) *string {
+	createResponse, err := c.client.CreateStackRequest(settings).Send(c.clientContext)
 
 	if err != nil {
 		panic("error creating stack," + err.Error())
@@ -85,9 +82,16 @@ func (c *Client) CreateStack(settings *aws.Settings) *string {
 }
 
 func (c *Client) CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
-	settings := aws.NewSettingsParams(paramFilePath, templatefilePath, nil, nil, nil)
+	settings := settings2.NewSettingsParams(paramFilePath, &templatefilePath, nil, nil, nil)
 	settings.StackName = stackName
-	stackId := c.CreateStack(settings)
+	stackId := c.CreateStack(&cloudformation.CreateStackInput{
+		StackName:    settings.StackName,
+		Tags:         settings.Tags,
+		Parameters:   settings.Parameters,
+		TemplateBody: settings.TemplateBody,
+		OnFailure:    settings.OnFailure,
+		Capabilities: settings.Capabilities,
+	})
 	return stackId
 }
 
@@ -99,18 +103,4 @@ func (c *Client) activeCloudFormationStacks() []cloudformation.Stack {
 	}
 
 	return stacks.Stacks
-}
-
-func cloudFormationClient() (*cloudformation.Client, context.Context) {
-	// Using the SDK's default configuration, loading additional config
-	// and credentials values from the environment variables, shared
-	// credentials, and shared configuration files
-	cfg, err := external.LoadDefaultAWSConfig()
-	if err != nil {
-		panic("unable to load SDK config, " + err.Error())
-	}
-
-	client := cloudformation.New(cfg)
-
-	return client, context.Background()
 }
