@@ -8,7 +8,7 @@ import (
 )
 
 func TestExportLogGroupAndWait(t *testing.T) {
-	client, r := testCloudWatchLogsClient("export_log_group_and_wait")
+	client, r := testCloudWatchLogsClient("_fixtures/export_log_group_and_wait")
 	defer r.Stop()
 	err := client.ExportLogGroupAndWait("/ecs/webFeature/WebFeatureDeploy-testfeature-deploys-go", "pocket-web-feature-archived-logs")
 	assert.Assert(t, err == nil)
