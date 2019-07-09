@@ -49,7 +49,7 @@ func (c *Client) ExportLogGroupAndWait(logGroupName string, s3BucketName string)
 func (c *Client) ExportLogGroup(logGroupName string, s3BucketName string) *string {
 
 	from := int64(300)
-	to := time.Now().AddDate(0, 0, 1).Unix()*1000
+	to := time.Now().AddDate(0, 0, 1).Unix() * 1000
 
 	response, err := c.client.CreateExportTaskRequest(&cloudwatchlogs.CreateExportTaskInput{
 		Destination:       &s3BucketName,
