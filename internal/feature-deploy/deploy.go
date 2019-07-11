@@ -33,7 +33,7 @@ func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gi
 
 	text := "Completed deploy of <" + compareURL + "|" + gitSHA + "> - *" + branchName + "* by <https://github.com/" + githubUsername + "|" + githubUsername + ">"
 
-	slackRequest := slack.NewSlackRequest(createdSettings.SlackDeploySettings.Username, createdSettings.SlackDeploySettings.Username, createdSettings.SlackDeploySettings.Icon, text, "#36a64f", *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl())
+	slackRequest := slack.NewSlackRequest(createdSettings.SlackDeploySettings.Username, createdSettings.SlackDeploySettings.Channel, createdSettings.SlackDeploySettings.Icon, text, "#36a64f", *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl())
 	err := slackRequest.SendSlackNotification(slackWebHook)
 	if err != nil {
 		panic("Error notifying slack: " + err.Error())
