@@ -8,8 +8,16 @@ import (
 
 //Daniel - This just makes sure we don't panic for now.
 //All functions should be updated to return errors we can test in a separate pr.
-func TestClient_DeployBranch(t *testing.T) {
+func TestClient_DeployBranch_CreateStack(t *testing.T) {
 	client, r := testFeatureDeploysClient("_fixtures/create_new_stack")
+	defer r.Stop()
+	client.DeployBranch("_fixtures/template_parameters.json", "_fixtures/template_cloudformation.yml", "master", "12345678912345678912345678912345678912", "12345678912345678912345678912345678912")
+}
+
+//Daniel - This just makes sure we don't panic for now.
+//All functions should be updated to return errors we can test in a separate pr.
+func TestClient_DeployBranch_UpdateService(t *testing.T) {
+	client, r := testFeatureDeploysClient("_fixtures/update_existing_stack")
 	defer r.Stop()
 	client.DeployBranch("_fixtures/template_parameters.json", "_fixtures/template_cloudformation.yml", "master", "12345678912345678912345678912345678912", "12345678912345678912345678912345678912")
 }

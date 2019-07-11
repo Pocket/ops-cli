@@ -213,7 +213,7 @@ interactions:
                 </member>
                 <member>
                   <ParameterKey>Vpc</ParameterKey>
-                  <ResolvedValue>vpc-012481e83ffa5e152</ResolvedValue>
+                  <ResolvedValue>vpc-1234456</ResolvedValue>
                   <ParameterValue>/Shared/Vpc</ParameterValue>
                 </member>
                 <member>
@@ -335,7 +335,7 @@ interactions:
                 </member>
                 <member>
                   <ParameterKey>Vpc</ParameterKey>
-                  <ResolvedValue>vpc-012481e83ffa5e152</ResolvedValue>
+                  <ResolvedValue>vpc-1234456</ResolvedValue>
                   <ParameterValue>/Shared/Vpc</ParameterValue>
                 </member>
                 <member>
