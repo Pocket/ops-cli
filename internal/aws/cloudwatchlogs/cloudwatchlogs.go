@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
+	"net/http"
 	"time"
 )
 
@@ -26,6 +27,10 @@ func New() *Client {
 		client:        cloudwatchlogs.New(cfg),
 		clientContext: context.Background(),
 	}
+}
+
+func (c *Client) SetTransport(transport http.RoundTripper) {
+	c.client.Config.HTTPClient.Transport = transport
 }
 
 func (c *Client) ExportLogGroupAndWait(logGroupName string, s3BucketName string) error {

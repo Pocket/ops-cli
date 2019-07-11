@@ -1,0 +1,66 @@
+{
+  "parameters": [
+    {
+      "ParameterKey": "IamStack",
+      "ParameterValue": "WebFeatureIam"
+    },
+    {
+      "ParameterKey": "ALBStack",
+      "ParameterValue": "WebFeatureShared"
+    },
+    {
+      "ParameterKey": "Env",
+      "ParameterValue": "Feature"
+    },
+    {
+      "ParameterKey": "HostedZoneId",
+      "ParameterValue": "123456789"
+    },
+    {
+      "ParameterKey": "DomainBase",
+      "ParameterValue": "feature.test.dev"
+    },
+    {
+      "ParameterKey": "FormattedBranchName",
+      "ParameterValue": "master"
+    },
+    {
+      "ParameterKey": "GitSHA",
+      "ParameterValue": "master"
+    }
+  ],
+  "tags": [
+    {
+      "key": "GitSHA",
+      "value": "WebFeature"
+    },
+    {
+      "key": "Env",
+      "value": "Feature"
+    },
+    {
+      "key": "BranchName",
+      "value": "master"
+    },
+    {
+      "key": "FormattedBranchName",
+      "value": "master"
+    }
+  ],
+  "on_failure": "DELETE",
+  "timeout_in_minutes": 5,
+  "stack_prefix": "WebFeatureDeploy-",
+  "ecs_cluster": "WebFeatureShared",
+  "log_group_prefix": "/ecs/webFeature/",
+  "archive_logs_bucket_name": "pocket-web-feature-archived-logs",
+  "slack_cleanup": {
+    "username": "Damage Control",
+    "channel": "#log-feature-deploy",
+    "icon": ":cleanup:"
+  },
+  "slack_deploy": {
+    "username": "Buster",
+    "channel": "#log-feature-deploy",
+    "icon": ":ship:"
+  }
+}

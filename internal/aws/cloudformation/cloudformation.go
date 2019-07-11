@@ -5,6 +5,7 @@ import (
 	settings2 "github.com/Pocket/ops-cli/internal/settings"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
+	"net/http"
 	"strings"
 )
 
@@ -23,6 +24,10 @@ func New() *Client {
 		client:        cloudformation.New(cfg),
 		clientContext: context.Background(),
 	}
+}
+
+func (c *Client) SetTransport(transport http.RoundTripper) {
+	c.client.Config.HTTPClient.Transport = transport
 }
 
 func (c *Client) ActiveCloudFormationStackBranchesWithPrefix(prefix string) []string {

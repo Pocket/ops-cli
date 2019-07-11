@@ -5,12 +5,17 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
+	"net/http"
 	"strings"
 )
 
 type Client struct {
 	client        *ecs.Client
 	clientContext context.Context
+}
+
+func (c *Client) setTransport(transport *http.Transport)  {
+	c.client.Config.HTTPClient.Transport = transport
 }
 
 func New() *Client {
@@ -22,6 +27,10 @@ func New() *Client {
 		client:        ecs.New(cfg),
 		clientContext: context.Background(),
 	}
+}
+
+func (c *Client) SetTransport(transport http.RoundTripper)  {
+	c.client.Config.HTTPClient.Transport = transport
 }
 
 func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNames *[]string) {

@@ -1,0 +1,378 @@
+---
+version: 1
+interactions:
+- request:
+    body: Action=DescribeStacks&StackName=WebFeatureDeploy-master&Version=2010-05-15
+    form:
+      Action:
+      - DescribeStacks
+      StackName:
+      - WebFeatureDeploy-master
+      Version:
+      - "2010-05-15"
+    headers:
+      Content-Length:
+      - "74"
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T032341Z
+    url: https://cloudformation.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: |
+      <ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+        <Error>
+          <Type>Sender</Type>
+          <Code>ValidationError</Code>
+          <Message>Stack with id WebFeatureDeploy-master does not exist</Message>
+        </Error>
+        <RequestId>489337fa-a38b-11e9-8ce6-a373b1141f2d</RequestId>
+      </ErrorResponse>
+    headers:
+      Content-Length:
+      - "309"
+      Content-Type:
+      - text/xml
+      Date:
+      - Thu, 11 Jul 2019 03:23:41 GMT
+    status: 400 Bad Request
+    code: 400
+    duration: ""
+- request:
+    body: Action=CreateStack&OnFailure=DELETE&Parameters.member.1.ParameterKey=IamStack&Parameters.member.1.ParameterValue=WebFeatureIam&Parameters.member.2.ParameterKey=ALBStack&Parameters.member.2.ParameterValue=WebFeatureShared&Parameters.member.3.ParameterKey=Env&Parameters.member.3.ParameterValue=Feature&Parameters.member.4.ParameterKey=HostedZoneId&Parameters.member.4.ParameterValue=123456789&Parameters.member.5.ParameterKey=DomainBase&Parameters.member.5.ParameterValue=feature.test.dev&Parameters.member.6.ParameterKey=FormattedBranchName&Parameters.member.6.ParameterValue=master&Parameters.member.7.ParameterKey=GitSHA&Parameters.member.7.ParameterValue=12345678912345678912345678912345678912&StackName=WebFeatureDeploy-master&Tags.member.1.Key=GitSHA&Tags.member.1.Value=12345678912345678912345678912345678912&Tags.member.2.Key=Env&Tags.member.2.Value=Feature&Tags.member.3.Key=BranchName&Tags.member.3.Value=master&Tags.member.4.Key=FormattedBranchName&Tags.member.4.Value=master&TemplateBody=AWSTemplateFormatVersion%3A+2010-09-09%0ADescription%3A+Web+Feature+Service+-+Deploys+Web+Code+to+ECS+per+git+branch%0AParameters%3A%0A++Env%3A%0A++++Type%3A+String%0A++++Default%3A+Feature%0A++++AllowedValues%3A%0A++++++-+Feature%0A%0A++IamStack%3A%0A++++Type%3A+String%0A++++Description%3A+%22Stack+name+used+to+create+IAM+roles%22%0A%0A++ALBStack%3A%0A++++Type%3A+String%0A++++Description%3A+%22Stack+name+used+to+create+the+ALB%22%0A%0A++RepositoryName%3A%0A++++Type%3A+String%0A++++Default%3A+feature%0A%0A++HostedZoneId%3A%0A++++Type%3A+String%0A++++Description%3A+The+Amazon+Route+53+Hosted+Zone+Id%0A%0A++FormattedBranchName%3A%0A++++Type%3A+String%0A++++Description%3A+The+branch+name+to+use%0A++++AllowedPattern%3A+%5E%5B%5C-a-zA-Z0-9%5D%2A%24%0A%0A++GitSHA%3A%0A++++Type%3A+String%0A++++Description%3A+The+sha+to+use%0A++++Default%3A+latest%0A%0A++DomainBase%3A%0A++++Type%3A+String%0A++++Description%3A+The+base+host+name+to+use.%0A%0A++PrivateSubnets%3A%0A++++Type%3A+%27AWS%3A%3ASSM%3A%3AParameter%3A%3AValue%3CList%3CAWS%3A%3AEC2%3A%3ASubnet%3A%3AId%3E%3E%27%0A++++Default%3A+%2FShared%2FPrivateSubnets%0A%0A++PublicSubnets%3A%0A++++Type%3A+%27AWS%3A%3ASSM%3A%3AParameter%3A%3AValue%3CList%3CAWS%3A%3AEC2%3A%3ASubnet%3A%3AId%3E%3E%27%0A++++Default%3A+%2FShared%2FPublicSubnets%0A%0A++Vpc%3A%0A++++Type%3A+%27AWS%3A%3ASSM%3A%3AParameter%3A%3AValue%3CAWS%3A%3AEC2%3A%3AVPC%3A%3AId%3E%27%0A++++Default%3A+%2FShared%2FVpc%0A%0AResources%3A%0A%0A++LogGroup%3A%0A++++Type%3A+AWS%3A%3ALogs%3A%3ALogGroup%0A++++Properties%3A%0A++++++LogGroupName%3A+%21Sub+%22%2Fecs%2Fweb%24%7BEnv%7D%2F%24%7BFormattedBranchName%7D%22%0A++++++RetentionInDays%3A+14%0A%0A++AllocateAlbRulePriorityCustomResource%3A%0A++++Type%3A+Custom%3A%3AAllocateAlbRulePriority%0A++++Properties%3A%0A++++++ServiceToken%3A%0A++++++++Fn%3A%3AImportValue%3A+%21Sub+%22%24%7BALBStack%7D-AllocateAlbRulePriorityCustomResourceLambdaArn%22%0A%0A++TargetGroup%3A%0A++++Type%3A+%27AWS%3A%3AElasticLoadBalancingV2%3A%3ATargetGroup%27%0A++++Properties%3A%0A++++++HealthCheckIntervalSeconds%3A+30%0A++++++HealthCheckPath%3A+%2Fpulse.html%0A++++++HealthCheckProtocol%3A+HTTP%0A++++++HealthyThresholdCount%3A+2%0A++++++UnhealthyThresholdCount%3A+2%0A++++++HealthCheckTimeoutSeconds%3A+9%0A++++++VpcId%3A+%21Ref+Vpc%0A++++++Protocol%3A+HTTP%0A++++++Port%3A+80%0A++++++TargetType%3A+ip%0A++++++TargetGroupAttributes%3A%0A++++++++-+Key%3A+deregistration_delay.timeout_seconds++%23NOTE%3A+we+do+not+want+this+on+production+this+is+just+so+our+dev+environments+don%27t+have+to+wait+for+draining%0A++++++++++Value%3A+0%0A%0A++ListenerRule%3A%0A++++Type%3A+%27AWS%3A%3AElasticLoadBalancingV2%3A%3AListenerRule%27%0A++++Properties%3A%0A++++++Actions%3A%0A++++++++-+Type%3A+forward%0A++++++++++TargetGroupArn%3A%0A++++++++++++Ref%3A+TargetGroup%0A++++++Conditions%3A%0A++++++++-+Field%3A+host-header%0A++++++++++Values%3A%0A++++++++++++-+%21Sub+%27%24%7BFormattedBranchName%7D.%24%7BDomainBase%7D%27%0A++++++ListenerArn%3A%0A++++++++Fn%3A%3AImportValue%3A+%21Sub+%22%24%7BALBStack%7D-ListenerARN%22%0A++++++Priority%3A+%21GetAtt+AllocateAlbRulePriorityCustomResource.Priority%0A++++DependsOn%3A%0A++++++-+TargetGroup%0A++++++-+AllocateAlbRulePriorityCustomResource%0A%0A++EcsService%3A%0A++++Type%3A+%27AWS%3A%3AECS%3A%3AService%27%0A++++Properties%3A%0A++++++ServiceName%3A+%21Ref+FormattedBranchName%0A++++++Cluster%3A%0A++++++++Fn%3A%3AImportValue%3A+%21Sub+%22%24%7BALBStack%7D-EcsClusterArn%22%0A++++++LaunchType%3A+FARGATE%0A++++++DesiredCount%3A+1%0A++++++LoadBalancers%3A%0A++++++++-+ContainerPort%3A+80%0A++++++++++ContainerName%3A+http%0A++++++++++TargetGroupArn%3A+%21Ref+%22TargetGroup%22%0A++++++TaskDefinition%3A+%21Ref+%22EcsTaskDefinition%22%0A++++++NetworkConfiguration%3A%0A++++++++AwsvpcConfiguration%3A%0A++++++++++AssignPublicIp%3A+DISABLED%0A++++++++++SecurityGroups%3A%0A++++++++++++-%0A++++++++++++++Fn%3A%3AImportValue%3A+%21Sub+%22%24%7BALBStack%7D-WebFeatureSecurityGroupArn%22%0A++++++++++Subnets%3A+%21Ref+PrivateSubnets%0A++++DependsOn%3A%0A++++++-+TargetGroup%0A++++++-+ListenerRule%0A%0A%0A++EcsTaskDefinition%3A%0A++++Type%3A+%27AWS%3A%3AECS%3A%3ATaskDefinition%27%0A++++Properties%3A%0A++++++Family%3A+%21Sub+%22web%24%7BEnv%7D-%24%7BFormattedBranchName%7D%22%0A++++++TaskRoleArn%3A%0A++++++++Fn%3A%3AImportValue%3A+%21Sub+%22%24%7BIamStack%7D-TaskRoleArn%22%0A++++++ExecutionRoleArn%3A%0A++++++++Fn%3A%3AImportValue%3A+%21Sub+%22%24%7BIamStack%7D-TaskExecutionRoleArn%22%0A++++++Cpu%3A+256%0A++++++Memory%3A+1GB%0A++++++RequiresCompatibilities%3A%0A++++++++-+FARGATE%0A++++++NetworkMode%3A+awsvpc%0A++++++Volumes%3A%0A++++++++-+Name%3A+logs%0A++++++++-+Name%3A+config%0A++++++ContainerDefinitions%3A%0A++++++++-+Name%3A+http%0A++++++++++Image%3A+%21Sub+%22%24%7BAWS%3A%3AAccountId%7D.dkr.ecr.%24%7BAWS%3A%3ARegion%7D.amazonaws.com%2F%24%7BRepositoryName%7D%3A%24%7BGitSHA%7D%22%0A++++++++++LogConfiguration%3A%0A++++++++++++LogDriver%3A+awslogs%0A++++++++++++Options%3A%0A++++++++++++++awslogs-group%3A+%21Sub+%27%2Fecs%2Fweb%24%7BEnv%7D%2F%24%7BFormattedBranchName%7D%27%0A++++++++++++++awslogs-region%3A+us-east-1%0A++++++++++++++awslogs-stream-prefix%3A+ecs%0A++++++++++Environment%3A%0A++++++++++++-+Name%3A+DOMAIN%0A++++++++++++++Value%3A+%21Sub+%22%24%7BFormattedBranchName%7D.%24%7BDomainBase%7D%22%0A++++++++++++-+Name%3A+XRAY_HOST%0A++++++++++++++Value%3A+127.0.0.1%0A++++++++++++-+Name%3A+APP_ENV%0A++++++++++++++Value%3A+stage%0A++++++++++PortMappings%3A%0A++++++++++++-+Protocol%3A+tcp%0A++++++++++++++ContainerPort%3A+80%0A++++++++++MountPoints%3A%0A++++++++++++-+ReadOnly%3A+true%0A++++++++++++++ContainerPath%3A+%2Fconfig%0A++++++++++++++SourceVolume%3A+config%0A++++++++++++-+ContainerPath%3A+%2Flogs%0A++++++++++++++SourceVolume%3A+logs%0A++++++++-+Name%3A+config-agent%0A++++++++++Image%3A+pocket%2Fconfig-agent%3Aphp%0A++++++++++LogConfiguration%3A%0A++++++++++++LogDriver%3A+awslogs%0A++++++++++++Options%3A%0A++++++++++++++awslogs-group%3A+%21Sub+%27%2Fecs%2Fweb%24%7BEnv%7D%2F%24%7BFormattedBranchName%7D%27%0A++++++++++++++awslogs-region%3A+us-east-1%0A++++++++++++++awslogs-stream-prefix%3A+ecs%0A++++++++++Environment%3A%0A++++++++++++-+Name%3A+CONFIG_DEST%0A++++++++++++++Value%3A+%2Fconfig%2Fserver_variables.php%0A++++++++++++-+Name%3A+CONFIG_INTERVAL%0A++++++++++++++Value%3A+%2760%27%0A++++++++++++-+Name%3A+CONFIG_PATH%0A++++++++++++++Value%3A+%21Sub+%22%2FWeb%2F%24%7BEnv%7D%22%0A++++++++++MountPoints%3A%0A++++++++++++-+ContainerPath%3A+%2Fconfig%0A++++++++++++++SourceVolume%3A+config%0A++++++++-+Name%3A+kinesis-agent%0A++++++++++Image%3A+%21Sub+%27%24%7BAWS%3A%3AAccountId%7D.dkr.ecr.%24%7BAWS%3A%3ARegion%7D.amazonaws.com%2Fkinesis-agent%3Alatest%27%0A++++++++++LogConfiguration%3A%0A++++++++++++LogDriver%3A+awslogs%0A++++++++++++Options%3A%0A++++++++++++++awslogs-group%3A+%21Sub+%27%2Fecs%2Fweb%24%7BEnv%7D%2F%24%7BFormattedBranchName%7D%27%0A++++++++++++++awslogs-region%3A+us-east-1%0A++++++++++++++awslogs-stream-prefix%3A+ecs%0A++++++++++MountPoints%3A%0A++++++++++++-+ContainerPath%3A+%2Flogs%0A++++++++++++++SourceVolume%3A+logs%0A++++++++-+Name%3A+apache-metric-agent%0A++++++++++Image%3A+%21Sub+%27%24%7BAWS%3A%3AAccountId%7D.dkr.ecr.%24%7BAWS%3A%3ARegion%7D.amazonaws.com%2Fapache-metric-agent%3Alatest%27%0A++++++++++LogConfiguration%3A%0A++++++++++++LogDriver%3A+awslogs%0A++++++++++++Options%3A%0A++++++++++++++awslogs-group%3A+%21Sub+%27%2Fecs%2Fweb%24%7BEnv%7D%2F%24%7BFormattedBranchName%7D%27%0A++++++++++++++awslogs-region%3A+us-east-1%0A++++++++++++++awslogs-stream-prefix%3A+ecs%0A++++++++++Environment%3A%0A++++++++++++-+Name%3A+APACHE_SERVICE%0A++++++++++++++Value%3A+%21Sub+%27web-%24%7BEnv%7D-%24%7BFormattedBranchName%7D%27%0A++++++++++++-+Name%3A+CONFIG_INTERVAL%0A++++++++++++++Value%3A+%2760%27%0A++++++++-+Name%3A+xray%0A++++++++++Image%3A+pottava%2Fxray%3A3.0%0A++++++++++Command%3A%0A++++++++++++-+%22--region%22%0A++++++++++++-+%22us-east-1%22%0A++++++++++++-+%22--local-mode%22%0A++++++++++PortMappings%3A%0A++++++++++++-+ContainerPort%3A+2000%0A++++++++++++++Protocol%3A+udp%0A++++++++++LogConfiguration%3A%0A++++++++++++LogDriver%3A+awslogs%0A++++++++++++Options%3A%0A++++++++++++++awslogs-group%3A+%21Sub+%27%2Fecs%2Fweb%24%7BEnv%7D%2F%24%7BFormattedBranchName%7D%27%0A++++++++++++++awslogs-region%3A+us-east-1%0A++++++++++++++awslogs-stream-prefix%3A+ecs%0A%0A&Version=2010-05-15
+    form:
+      Action:
+      - CreateStack
+      OnFailure:
+      - DELETE
+      Parameters.member.1.ParameterKey:
+      - IamStack
+      Parameters.member.1.ParameterValue:
+      - WebFeatureIam
+      Parameters.member.2.ParameterKey:
+      - ALBStack
+      Parameters.member.2.ParameterValue:
+      - WebFeatureShared
+      Parameters.member.3.ParameterKey:
+      - Env
+      Parameters.member.3.ParameterValue:
+      - Feature
+      Parameters.member.4.ParameterKey:
+      - HostedZoneId
+      Parameters.member.4.ParameterValue:
+      - 123456789
+      Parameters.member.5.ParameterKey:
+      - DomainBase
+      Parameters.member.5.ParameterValue:
+      - feature.test.dev
+      Parameters.member.6.ParameterKey:
+      - FormattedBranchName
+      Parameters.member.6.ParameterValue:
+      - master
+      Parameters.member.7.ParameterKey:
+      - GitSHA
+      Parameters.member.7.ParameterValue:
+      - 12345678912345678912345678912345678912
+      StackName:
+      - WebFeatureDeploy-master
+      Tags.member.1.Key:
+      - GitSHA
+      Tags.member.1.Value:
+      - 12345678912345678912345678912345678912
+      Tags.member.2.Key:
+      - Env
+      Tags.member.2.Value:
+      - Feature
+      Tags.member.3.Key:
+      - BranchName
+      Tags.member.3.Value:
+      - master
+      Tags.member.4.Key:
+      - FormattedBranchName
+      Tags.member.4.Value:
+      - master
+      TemplateBody:
+        - |+
+          AWSTemplateFormatVersion: 2010-09-09
+          Description: Web Feature Service - Deploys Web Code to ECS per git branch
+
+      Version:
+      - "2010-05-15"
+    headers:
+      Content-Length:
+      - "9358"
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T032342Z
+    url: https://cloudformation.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: |
+      <CreateStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+        <CreateStackResult>
+          <StackId>arn:aws:cloudformation:us-east-1:123456789123:stack/WebFeatureDeploy-master/48ee28e0-a38b-11e9-8640-12069a319f62</StackId>
+        </CreateStackResult>
+        <ResponseMetadata>
+          <RequestId>48c767dd-a38b-11e9-968c-83c61e193061</RequestId>
+        </ResponseMetadata>
+      </CreateStackResponse>
+    headers:
+      Content-Length:
+      - "393"
+      Content-Type:
+      - text/xml
+      Date:
+      - Thu, 11 Jul 2019 03:23:42 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: Action=DescribeStacks&StackName=arn%3Aaws%3Acloudformation%3Aus-east-1%3A123456789123%3Astack%2FWebFeatureDeploy-master%2F48ee28e0-a38b-11e9-8640-12069a319f62&Version=2010-05-15
+    form:
+      Action:
+      - DescribeStacks
+      StackName:
+      - arn:aws:cloudformation:us-east-1:123456789123:stack/WebFeatureDeploy-master/48ee28e0-a38b-11e9-8640-12069a319f62
+      Version:
+      - "2010-05-15"
+    headers:
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T032413Z
+    url: https://cloudformation.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: |
+      <DescribeStacksResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+        <DescribeStacksResult>
+          <Stacks>
+            <member>
+              <CreationTime>2019-07-11T03:23:43.199Z</CreationTime>
+              <NotificationARNs/>
+              <StackId>arn:aws:cloudformation:us-east-1:123456789123:stack/WebFeatureDeploy-master/48ee28e0-a38b-11e9-8640-12069a319f62</StackId>
+              <StackName>WebFeatureDeploy-master</StackName>
+              <Description>Web Feature Service - Deploys Web Code to ECS per git branch</Description>
+              <StackStatus>CREATE_IN_PROGRESS</StackStatus>
+              <DisableRollback>false</DisableRollback>
+              <Tags>
+                <member>
+                  <Value>master</Value>
+                  <Key>FormattedBranchName</Key>
+                </member>
+                <member>
+                  <Value>master</Value>
+                  <Key>BranchName</Key>
+                </member>
+                <member>
+                  <Value>Feature</Value>
+                  <Key>Env</Key>
+                </member>
+                <member>
+                  <Value>12345678912345678912345678912345678912</Value>
+                  <Key>GitSHA</Key>
+                </member>
+              </Tags>
+              <RollbackConfiguration/>
+              <DriftInformation>
+                <StackDriftStatus>NOT_CHECKED</StackDriftStatus>
+              </DriftInformation>
+              <EnableTerminationProtection>false</EnableTerminationProtection>
+              <Parameters>
+                <member>
+                  <ParameterKey>DomainBase</ParameterKey>
+                  <ParameterValue>feature.test.dev</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>PrivateSubnets</ParameterKey>
+                  <ResolvedValue>subnet-12345</ResolvedValue>
+                  <ParameterValue>/Shared/PrivateSubnets</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>FormattedBranchName</ParameterKey>
+                  <ParameterValue>master</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>HostedZoneId</ParameterKey>
+                  <ParameterValue>123456789</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>PublicSubnets</ParameterKey>
+                  <ResolvedValue>subnet-12345</ResolvedValue>
+                  <ParameterValue>/Shared/PublicSubnets</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>Vpc</ParameterKey>
+                  <ResolvedValue>vpc-012481e83ffa5e152</ResolvedValue>
+                  <ParameterValue>/Shared/Vpc</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>IamStack</ParameterKey>
+                  <ParameterValue>WebFeatureIam</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>RepositoryName</ParameterKey>
+                  <ParameterValue>feature</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>Env</ParameterKey>
+                  <ParameterValue>Feature</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>ALBStack</ParameterKey>
+                  <ParameterValue>WebFeatureShared</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>GitSHA</ParameterKey>
+                  <ParameterValue>12345678912345678912345678912345678912</ParameterValue>
+                </member>
+              </Parameters>
+            </member>
+          </Stacks>
+        </DescribeStacksResult>
+        <ResponseMetadata>
+          <RequestId>5b3d821b-a38b-11e9-bd32-a5f4266302d2</RequestId>
+        </ResponseMetadata>
+      </DescribeStacksResponse>
+    headers:
+      Content-Type:
+      - text/xml
+      Date:
+      - Thu, 11 Jul 2019 03:24:13 GMT
+      Vary:
+      - accept-encoding
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: Action=DescribeStacks&StackName=arn%3Aaws%3Acloudformation%3Aus-east-1%3A123456789123%3Astack%2FWebFeatureDeploy-master%2F48ee28e0-a38b-11e9-8640-12069a319f62&Version=2010-05-15
+    form:
+      Action:
+      - DescribeStacks
+      StackName:
+      - arn:aws:cloudformation:us-east-1:123456789123:stack/WebFeatureDeploy-master/48ee28e0-a38b-11e9-8640-12069a319f62
+      Version:
+      - "2010-05-15"
+    headers:
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T032614Z
+    url: https://cloudformation.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: |
+      <DescribeStacksResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+        <DescribeStacksResult>
+          <Stacks>
+            <member>
+              <CreationTime>2019-07-11T03:23:43.199Z</CreationTime>
+              <NotificationARNs/>
+              <StackId>arn:aws:cloudformation:us-east-1:123456789123:stack/WebFeatureDeploy-master/48ee28e0-a38b-11e9-8640-12069a319f62</StackId>
+              <StackName>WebFeatureDeploy-master</StackName>
+              <Description>Web Feature Service - Deploys Web Code to ECS per git branch</Description>
+              <StackStatus>CREATE_COMPLETE</StackStatus>
+              <DisableRollback>false</DisableRollback>
+              <Tags>
+                <member>
+                  <Value>master</Value>
+                  <Key>FormattedBranchName</Key>
+                </member>
+                <member>
+                  <Value>master</Value>
+                  <Key>BranchName</Key>
+                </member>
+                <member>
+                  <Value>Feature</Value>
+                  <Key>Env</Key>
+                </member>
+                <member>
+                  <Value>12345678912345678912345678912345678912</Value>
+                  <Key>GitSHA</Key>
+                </member>
+              </Tags>
+              <RollbackConfiguration/>
+              <DriftInformation>
+                <StackDriftStatus>NOT_CHECKED</StackDriftStatus>
+              </DriftInformation>
+              <EnableTerminationProtection>false</EnableTerminationProtection>
+              <Parameters>
+                <member>
+                  <ParameterKey>DomainBase</ParameterKey>
+                  <ParameterValue>feature.test.dev</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>PrivateSubnets</ParameterKey>
+                  <ResolvedValue>subnet-12345</ResolvedValue>
+                  <ParameterValue>/Shared/PrivateSubnets</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>FormattedBranchName</ParameterKey>
+                  <ParameterValue>master</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>HostedZoneId</ParameterKey>
+                  <ParameterValue>123456789</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>PublicSubnets</ParameterKey>
+                  <ResolvedValue>subnet-12345</ResolvedValue>
+                  <ParameterValue>/Shared/PublicSubnets</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>Vpc</ParameterKey>
+                  <ResolvedValue>vpc-012481e83ffa5e152</ResolvedValue>
+                  <ParameterValue>/Shared/Vpc</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>IamStack</ParameterKey>
+                  <ParameterValue>WebFeatureIam</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>RepositoryName</ParameterKey>
+                  <ParameterValue>feature</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>Env</ParameterKey>
+                  <ParameterValue>Feature</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>ALBStack</ParameterKey>
+                  <ParameterValue>WebFeatureShared</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>GitSHA</ParameterKey>
+                  <ParameterValue>12345678912345678912345678912345678912</ParameterValue>
+                </member>
+              </Parameters>
+            </member>
+          </Stacks>
+        </DescribeStacksResult>
+        <ResponseMetadata>
+          <RequestId>a39281db-a38b-11e9-8891-993fcc1adfd5</RequestId>
+        </ResponseMetadata>
+      </DescribeStacksResponse>
+    headers:
+      Content-Type:
+      - text/xml
+      Date:
+      - Thu, 11 Jul 2019 03:26:15 GMT
+      Vary:
+      - accept-encoding
+    status: 200 OK
+    code: 200
+    duration: ""
