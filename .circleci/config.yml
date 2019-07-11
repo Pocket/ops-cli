@@ -77,15 +77,12 @@ workflows:
   all:
     jobs:
       - build_and_test
-      - check-and-build-only:
-          filters:
-            branches:
-              ignore:
-                - master
+      - check-and-build-only
       - docker/publish:
           image: pocket/ops-cli
-          tag: latest
+          tag: $CIRCLE_TAG
           filters:
+            tags:
+              only: /^v.*/
             branches:
-              only:
-                - master
+              ignore: /.*/
