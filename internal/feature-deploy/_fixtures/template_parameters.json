@@ -52,7 +52,7 @@
   "stack_prefix": "WebFeatureDeploy-",
   "ecs_cluster": "WebFeatureShared",
   "log_group_prefix": "/ecs/webFeature/",
-  "archive_logs_bucket_name": "pocket-web-feature-archived-logs",
+  "archive_logs_bucket_name": "archived-logs",
   "slack_cleanup": {
     "username": "Damage Control",
     "channel": "#log-feature-deploy",

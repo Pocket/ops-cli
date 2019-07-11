@@ -2,7 +2,7 @@ package cloudformation
 
 import (
 	"context"
-	settings2 "github.com/Pocket/ops-cli/internal/settings"
+	"github.com/Pocket/ops-cli/internal/settings"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"net/http"
@@ -87,7 +87,7 @@ func (c *Client) CreateStack(settings *cloudformation.CreateStackInput) *string 
 }
 
 func (c *Client) CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
-	settings := settings2.NewSettingsParams(paramFilePath, &templatefilePath, nil, nil, nil)
+	settings := settings.NewSettingsParams(paramFilePath, &templatefilePath, nil, nil, nil)
 	settings.StackName = stackName
 	stackId := c.CreateStack(&cloudformation.CreateStackInput{
 		StackName:    settings.StackName,

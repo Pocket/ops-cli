@@ -15,11 +15,11 @@ func (c *Client) CleanUpBranches(paramFilePath string, slackWebHook string, olde
 	for _, branchName := range branchesToDelete {
 		formattedBranchName := util.DomainSafeString(branchName)
 		branchSettings := settings.NewSettingsParams(paramFilePath, nil, nil, &branchName, &formattedBranchName)
-		c.CleanUpBranch(branchSettings, slackWebHook)
+		c.CleanUpBranch(branchSettings, &slackWebHook)
 	}
 }
 
-func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook string) {
+func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook *string) {
 	err := c.cloudWatchLogsClient.ExportLogGroupAndWait(*settings.LogGroupPrefix+*settings.FormattedBranchName, *settings.ArchiveLogsBucketName)
 	if err != nil {
 		panic("There was an error backing up the feature logs: " + err.Error())
@@ -27,10 +27,13 @@ func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook string)
 
 	c.cloudFormationClient.DeleteStack(*settings.StackName)
 
+	if slackWebHook == nil {
+		return
+	}
 	text := "Cleaned up *" + *settings.BranchName + "*"
 
 	slackRequest := slack.NewSlackRequestText(settings.SlackCleanUpSettings.Username, settings.SlackCleanUpSettings.Channel, settings.SlackCleanUpSettings.Icon, text)
-	err = slackRequest.SendSlackNotification(slackWebHook)
+	err = slackRequest.SendSlackNotification(*slackWebHook)
 	if err != nil {
 		panic("Error notifying slack: " + err.Error())
 	}
