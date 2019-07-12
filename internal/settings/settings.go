@@ -152,7 +152,7 @@ func (settings *Settings) setName(stackName *string) {
 	settings.StackName = stackName
 }
 
-func (settings *Settings) getBaseUrl() *string {
+func (settings *Settings) GetBaseUrl() *string {
 	return settings.getParameter("DomainBase")
 }
 

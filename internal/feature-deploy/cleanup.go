@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (c *Client) CleanUpBranches(paramFilePath string, slackWebHook string, olderThanDate time.Time) {
+func (c *Client) CleanUpBranches(paramFilePath string, slackWebHook string, olderThanDate time.Time, githubAccessToken string, githubOwner string, githubRepo string) {
 	stackPrefix := *settings.NewSettingsParams(paramFilePath, nil, nil, nil, nil).StackPrefix
 
 	branchesToDelete := c.StacksToDelete(stackPrefix, olderThanDate)

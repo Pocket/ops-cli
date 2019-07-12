@@ -67,6 +67,21 @@ func addCommands(app *cli.App) {
 					EnvVar: "DAYS_OLD",
 					Value:  8,
 				},
+				cli.StringFlag{
+					Name:   "github-token, ght",
+					Usage:  "The github token",
+					EnvVar: "GITHUB_TOKEN",
+				},
+				cli.StringFlag{
+					Name:   "github-owner, gho",
+					Usage:  "The github owner",
+					EnvVar: "GITHUB_OWNER",
+				},
+				cli.StringFlag{
+					Name:   "github-repo, ghr",
+					Usage:  "The github repo",
+					EnvVar: "GITHUB_REPO",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				stackPrefix := c.String("stack-prefix")
@@ -82,8 +97,13 @@ func addCommands(app *cli.App) {
 
 					return nil
 				}
-
-				client.CleanUpBranches(c.String("param-file"), c.String("slack-webhook"), olderThanDate)
+				featureDeploy.New().CleanUpBranches(
+					c.String("param-file"),
+					c.String("slack-webhook"),
+					olderThanDate,
+					c.String("github-token"),
+					c.String("github-owner"),
+					c.String("github-repo"), )
 				return nil
 			},
 		},
@@ -163,9 +183,35 @@ func addCommands(app *cli.App) {
 					Usage:  "The github compare-url",
 					EnvVar: "GITHUB_COMPARE_URL",
 				},
+				cli.StringFlag{
+					Name:   "github-token, ght",
+					Usage:  "The github token",
+					EnvVar: "GITHUB_TOKEN",
+				},
+				cli.StringFlag{
+					Name:   "github-owner, gho",
+					Usage:  "The github owner",
+					EnvVar: "GITHUB_OWNER",
+				},
+				cli.StringFlag{
+					Name:   "github-repo, ghr",
+					Usage:  "The github repo",
+					EnvVar: "GITHUB_REPO",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.New().NotifyDeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
+				featureDeploy.New().NotifyDeployBranch(
+					c.String("param-file"),
+					c.String("template-file"),
+					c.String("branch-name"),
+					c.String("git-sha"),
+					c.String("slack-webhook"),
+					c.String("github-username"),
+					c.String("github-compare-url"),
+					c.String("github-token"),
+					c.String("github-owner"),
+					c.String("github-repo"),
+				)
 				return nil
 			},
 		},
