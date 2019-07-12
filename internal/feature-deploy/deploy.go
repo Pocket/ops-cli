@@ -1,37 +1,40 @@
 package feature_deploy
 
 import (
-	"github.com/Pocket/ops-cli/internal/aws"
-	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
-	"github.com/Pocket/ops-cli/internal/aws/ecs"
+	"github.com/Pocket/ops-cli/internal/settings"
 	"github.com/Pocket/ops-cli/internal/slack"
 	"github.com/Pocket/ops-cli/internal/util"
+	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 )
 
-func DeployBranch(parametersFile, templateFile, branchName, gitSHA, imageName string) {
-	cloudformationClient := cloudformation.New()
-
+func (c *Client) DeployBranch(parametersFile, templateFile, branchName, gitSHA, imageName string) {
 	stackNameSuffix := util.DomainSafeString(branchName)
 
-	settings := aws.NewSettingsParams(parametersFile, templateFile, &gitSHA, &branchName, &stackNameSuffix)
+	createdSettings := settings.NewSettingsParams(parametersFile, &templateFile, &gitSHA, &branchName, &stackNameSuffix)
 
-	if !cloudformationClient.StackExists(*settings.StackName) {
-		cloudformationClient.CreateStack(settings)
+	if !c.cloudFormationClient.StackExists(*createdSettings.StackName) {
+		c.cloudFormationClient.CreateStack(&cloudformation.CreateStackInput{
+			StackName:    createdSettings.StackName,
+			Tags:         createdSettings.Tags,
+			Parameters:   createdSettings.Parameters,
+			TemplateBody: createdSettings.TemplateBody,
+			OnFailure:    createdSettings.OnFailure,
+			Capabilities: createdSettings.Capabilities,
+		})
 	} else {
-		ecsClient := ecs.New()
-		ecsClient.DeployUpdate(settings.ECSCluster, &stackNameSuffix, &[]string{imageName})
+		c.ecsClient.DeployUpdate(createdSettings.ECSCluster, &stackNameSuffix, &[]string{imageName})
 	}
 }
 
-func NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebhook string, githubUsername string, compareURL string) {
+func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebHook string, githubUsername string, compareURL string) {
 	stackNameSuffix := util.DomainSafeString(branchName)
 
-	settings := aws.NewSettingsParams(parametersFile, templateFile, &gitSHA, &branchName, &stackNameSuffix)
+	createdSettings := settings.NewSettingsParams(parametersFile, &templateFile, &gitSHA, &branchName, &stackNameSuffix)
 
 	text := "Completed deploy of <" + compareURL + "|" + gitSHA + "> - *" + branchName + "* by <https://github.com/" + githubUsername + "|" + githubUsername + ">"
 
-	slackRequest := slack.NewSlackRequest("Buster", "#log-feature-deploys", ":ship:", text, "#36a64f", *settings.GetDeployUrl(), *settings.GetDeployUrl(), *settings.GetDeployUrl())
-	err := slackRequest.SendSlackNotification(slackWebhook)
+	slackRequest := slack.NewSlackRequest(createdSettings.SlackDeploySettings.Username, createdSettings.SlackDeploySettings.Channel, createdSettings.SlackDeploySettings.Icon, text, "#36a64f", *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl())
+	err := slackRequest.SendSlackNotification(slackWebHook)
 	if err != nil {
 		panic("Error notifying slack: " + err.Error())
 	}

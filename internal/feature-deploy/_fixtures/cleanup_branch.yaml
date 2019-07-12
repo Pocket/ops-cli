@@ -1,0 +1,125 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"destination":"archived-logs","destinationPrefix":"/ecs/webFeature/master","from":300,"logGroupName":"/ecs/webFeature/master","to":1562905265000}'
+    form: {}
+    headers:
+      Content-Length:
+      - "165"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T042105Z
+      X-Amz-Target:
+      - Logs_20140328.CreateExportTask
+    url: https://logs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"taskId":"d6a4c421-79d4-4d55-a0ed-d4eb424c8f6d"}'
+    headers:
+      Content-Length:
+      - "49"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:21:05 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"taskId":"d6a4c421-79d4-4d55-a0ed-d4eb424c8f6d"}'
+    form: {}
+    headers:
+      Content-Length:
+      - "49"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T042105Z
+      X-Amz-Target:
+      - Logs_20140328.DescribeExportTasks
+    url: https://logs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"exportTasks":[{"destination":"archived-logs","destinationPrefix":"/ecs/webFeature/master","executionInfo":{"creationTime":1562818865777},"from":1561609265673,"logGroupName":"/ecs/webFeature/master","status":{"code":"PENDING"},"taskId":"d6a4c421-79d4-4d55-a0ed-d4eb424c8f6d","to":1562905265000}]}'
+    headers:
+      Content-Length:
+      - "316"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:21:05 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"taskId":"d6a4c421-79d4-4d55-a0ed-d4eb424c8f6d"}'
+    form: {}
+    headers:
+      Content-Length:
+      - "49"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T042110Z
+      X-Amz-Target:
+      - Logs_20140328.DescribeExportTasks
+    url: https://logs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"exportTasks":[{"destination":"archived-logs","destinationPrefix":"/ecs/webFeature/master","executionInfo":{"completionTime":1562818867042,"creationTime":1562818865777},"from":1561609265673,"logGroupName":"/ecs/webFeature/master","status":{"code":"COMPLETED","message":"Completed
+      successfully"},"taskId":"d6a4c421-79d4-4d55-a0ed-d4eb424c8f6d","to":1562905265000}]}'
+    headers:
+      Content-Length:
+      - "384"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:21:10 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: Action=DeleteStack&StackName=WebFeatureDeploy-master&Version=2010-05-15
+    form:
+      Action:
+      - DeleteStack
+      StackName:
+      - WebFeatureDeploy-master
+      Version:
+      - "2010-05-15"
+    headers:
+      Content-Length:
+      - "71"
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T042116Z
+    url: https://cloudformation.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: |
+      <DeleteStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+        <ResponseMetadata>
+          <RequestId>53362cea-a393-11e9-a7cd-21e2f7495093</RequestId>
+        </ResponseMetadata>
+      </DeleteStackResponse>
+    headers:
+      Content-Length:
+      - "212"
+      Content-Type:
+      - text/xml
+      Date:
+      - Thu, 11 Jul 2019 04:21:16 GMT
+    status: 200 OK
+    code: 200
+    duration: ""

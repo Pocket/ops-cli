@@ -1,35 +1,46 @@
 package feature_deploy
 
 import (
-	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
 	"github.com/Pocket/ops-cli/internal/git"
+	"github.com/Pocket/ops-cli/internal/settings"
 	"github.com/Pocket/ops-cli/internal/slack"
 	"github.com/Pocket/ops-cli/internal/util"
 	"time"
 )
 
-func CleanUpBranches(prefix string, slackWebhook string, olderThanDate time.Time) {
-	client := cloudformation.New()
+func (c *Client) CleanUpBranches(paramFilePath string, slackWebHook string, olderThanDate time.Time) {
+	stackPrefix := *settings.NewSettingsParams(paramFilePath, nil, nil, nil, nil).StackPrefix
 
-	branchesToDelete := BranchesToDelete(prefix, olderThanDate)
-
+	branchesToDelete := c.StacksToDelete(stackPrefix, olderThanDate)
 	for _, branchName := range branchesToDelete {
-		client.DeleteStack(stackNameFromBranchName(prefix, branchName))
-
-		text := "Cleaned up *" + branchName + "*"
-
-		slackRequest := slack.NewSlackRequestText("Damage Control", "#log-feature-deploys", ":cleanup:", text)
-		err := slackRequest.SendSlackNotification(slackWebhook)
-		if err != nil {
-			panic("Error notifying slack: " + err.Error())
-		}
+		formattedBranchName := util.DomainSafeString(branchName)
+		branchSettings := settings.NewSettingsParams(paramFilePath, nil, nil, &branchName, &formattedBranchName)
+		c.CleanUpBranch(branchSettings, &slackWebHook)
 	}
 }
 
-func BranchesToDelete(prefix string, olderThanDate time.Time) []string {
-	client := cloudformation.New()
+func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook *string) {
+	err := c.cloudWatchLogsClient.ExportLogGroupAndWait(*settings.LogGroupPrefix+*settings.FormattedBranchName, *settings.ArchiveLogsBucketName)
+	if err != nil {
+		panic("There was an error backing up the feature logs: " + err.Error())
+	}
 
-	stackBranchNames := client.ActiveCloudFormationStackBranchesWithPrefix(prefix)
+	c.cloudFormationClient.DeleteStack(*settings.StackName)
+
+	if slackWebHook == nil {
+		return
+	}
+	text := "Cleaned up *" + *settings.BranchName + "*"
+
+	slackRequest := slack.NewSlackRequestText(settings.SlackCleanUpSettings.Username, settings.SlackCleanUpSettings.Channel, settings.SlackCleanUpSettings.Icon, text)
+	err = slackRequest.SendSlackNotification(*slackWebHook)
+	if err != nil {
+		panic("Error notifying slack: " + err.Error())
+	}
+}
+
+func (c *Client) StacksToDelete(prefix string, olderThanDate time.Time) []string {
+	stackBranchNames := c.cloudFormationClient.ActiveCloudFormationStackBranchesWithPrefix(prefix)
 
 	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames(olderThanDate)
 

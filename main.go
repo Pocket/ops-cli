@@ -47,9 +47,9 @@ func addCommands(app *cli.App) {
 			Usage:   "Cleanup all unactive stacks with the prefix",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:   "stack-prefix, p",
-					Usage:  "The stack prefix for these deployments (WebFeatureDeploy-)",
-					EnvVar: "STACK_PREFIX",
+					Name:   "param-file, p",
+					Usage:  "The parameter file",
+					EnvVar: "PARAM_FILE",
 				},
 				cli.BoolTFlag{
 					Name:   "dry-run, d",
@@ -71,9 +71,10 @@ func addCommands(app *cli.App) {
 			Action: func(c *cli.Context) error {
 				stackPrefix := c.String("stack-prefix")
 				olderThanDate := time.Now().AddDate(0, 0, -c.Int("days-old"))
+				client := featureDeploy.New()
 
 				if c.BoolT("dry-run") {
-					stackBranchNames := featureDeploy.BranchesToDelete(stackPrefix, olderThanDate)
+					stackBranchNames := client.StacksToDelete(stackPrefix, olderThanDate)
 
 					for _, stackBranchName := range stackBranchNames {
 						fmt.Println(stackBranchName)
@@ -82,7 +83,7 @@ func addCommands(app *cli.App) {
 					return nil
 				}
 
-				featureDeploy.CleanUpBranches(stackPrefix, c.String("slack-webhook"), olderThanDate)
+				client.CleanUpBranches(c.String("param-file"), c.String("slack-webhook"), olderThanDate)
 				return nil
 			},
 		},
@@ -118,7 +119,7 @@ func addCommands(app *cli.App) {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
+				featureDeploy.New().DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
 				return nil
 			},
 		},
@@ -164,7 +165,7 @@ func addCommands(app *cli.App) {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.NotifyDeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
+				featureDeploy.New().NotifyDeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
 				return nil
 			},
 		},

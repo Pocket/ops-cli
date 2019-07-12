@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
+	"net/http"
 	"strings"
 )
 
@@ -13,12 +14,23 @@ type Client struct {
 	clientContext context.Context
 }
 
+func (c *Client) setTransport(transport *http.Transport)  {
+	c.client.Config.HTTPClient.Transport = transport
+}
+
 func New() *Client {
-	client, clientContext := ecsClient()
-	return &Client{
-		client:        client,
-		clientContext: clientContext,
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		panic("unable to load SDK config, " + err.Error())
 	}
+	return &Client{
+		client:        ecs.New(cfg),
+		clientContext: context.Background(),
+	}
+}
+
+func (c *Client) SetTransport(transport http.RoundTripper)  {
+	c.client.Config.HTTPClient.Transport = transport
 }
 
 func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNames *[]string) {
@@ -43,17 +55,6 @@ func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNam
 	if err != nil {
 		panic("error waiting for the service, " + err.Error())
 	}
-}
-
-func ecsClient() (*ecs.Client, context.Context) {
-	// Using the SDK's default configuration, loading additional config
-	// and credentials values from the environment variables, shared
-	// credentials, and shared configuration files
-	cfg, err := external.LoadDefaultAWSConfig()
-	if err != nil {
-		panic("unable to load SDK config, " + err.Error())
-	}
-	return ecs.New(cfg), context.Background()
 }
 
 // RegisterTaskDefinition updates the existing task definition's image.

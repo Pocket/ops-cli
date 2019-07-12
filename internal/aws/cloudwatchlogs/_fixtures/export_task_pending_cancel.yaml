@@ -1,0 +1,31 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"taskId":"790e51c8-8313-1234-988f-a5273ed59090"}'
+    form: {}
+    headers:
+      Content-Length:
+      - "49"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190709T000732Z
+      X-Amz-Target:
+      - Logs_20140328.DescribeExportTasks
+    url: https://logs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"exportTasks":[{"destination":"pocket-web-feature-archived-logs","destinationPrefix":"/ecs/webFeature/WebFeatureDeploy-testfeature-deploys-go","executionInfo":{"creationTime":1562630852250},"from":1561421252121,"logGroupName":"/ecs/webFeature/WebFeatureDeploy-testfeature-deploys-go","status":{"code":"PENDING_CANCEL"},"taskId":"790e51c8-8313-1234-988f-a5273ed59090","to":1562717251000}]}'
+    headers:
+      Content-Length:
+      - "382"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Tue, 09 Jul 2019 00:07:31 GMT
+    status: 200 OK
+    code: 200
+    duration: ""

@@ -1,0 +1,608 @@
+---
+version: 1
+interactions:
+- request:
+    body: Action=DescribeStacks&StackName=WebFeatureDeploy-master&Version=2010-05-15
+    form:
+      Action:
+      - DescribeStacks
+      StackName:
+      - WebFeatureDeploy-master
+      Version:
+      - "2010-05-15"
+    headers:
+      Content-Length:
+      - "74"
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T040252Z
+    url: https://cloudformation.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: |
+      <DescribeStacksResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+        <DescribeStacksResult>
+          <Stacks>
+            <member>
+              <CreationTime>2019-07-11T03:23:43.199Z</CreationTime>
+              <NotificationARNs/>
+              <StackId>arn:aws:cloudformation:us-east-1:123456789012:stack/WebFeatureDeploy-master/48ee28e0-a38b-11e9-8640-12069a319f62</StackId>
+              <StackName>WebFeatureDeploy-master</StackName>
+              <Description>Web Feature Service - Deploys Web Code to ECS per git branch</Description>
+              <StackStatus>CREATE_COMPLETE</StackStatus>
+              <DisableRollback>false</DisableRollback>
+              <Tags>
+                <member>
+                  <Value>master</Value>
+                  <Key>FormattedBranchName</Key>
+                </member>
+                <member>
+                  <Value>master</Value>
+                  <Key>BranchName</Key>
+                </member>
+                <member>
+                  <Value>Feature</Value>
+                  <Key>Env</Key>
+                </member>
+                <member>
+                  <Value>12345678912345678912345678912345678912</Value>
+                  <Key>GitSHA</Key>
+                </member>
+              </Tags>
+              <RollbackConfiguration/>
+              <DriftInformation>
+                <StackDriftStatus>NOT_CHECKED</StackDriftStatus>
+              </DriftInformation>
+              <EnableTerminationProtection>false</EnableTerminationProtection>
+              <Parameters>
+                <member>
+                  <ParameterKey>DomainBase</ParameterKey>
+                  <ParameterValue>test.feature.com</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>PrivateSubnets</ParameterKey>
+                  <ResolvedValue>subnet-12345</ResolvedValue>
+                  <ParameterValue>/Shared/PrivateSubnets</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>FormattedBranchName</ParameterKey>
+                  <ParameterValue>master</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>HostedZoneId</ParameterKey>
+                  <ParameterValue>1231412313132</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>PublicSubnets</ParameterKey>
+                  <ResolvedValue>subnet-12345</ResolvedValue>
+                  <ParameterValue>/Shared/PublicSubnets</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>Vpc</ParameterKey>
+                  <ResolvedValue>vpc-123456</ResolvedValue>
+                  <ParameterValue>/Shared/Vpc</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>IamStack</ParameterKey>
+                  <ParameterValue>WebFeatureIam</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>RepositoryName</ParameterKey>
+                  <ParameterValue>feature</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>Env</ParameterKey>
+                  <ParameterValue>Feature</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>ALBStack</ParameterKey>
+                  <ParameterValue>WebFeatureShared</ParameterValue>
+                </member>
+                <member>
+                  <ParameterKey>GitSHA</ParameterKey>
+                  <ParameterValue>12345678912345678912345678912345678912</ParameterValue>
+                </member>
+              </Parameters>
+            </member>
+          </Stacks>
+        </DescribeStacksResult>
+        <ResponseMetadata>
+          <RequestId>c1dc50b4-a390-11e9-87cd-65be80362b37</RequestId>
+        </ResponseMetadata>
+      </DescribeStacksResponse>
+    headers:
+      Content-Type:
+      - text/xml
+      Date:
+      - Thu, 11 Jul 2019 04:02:53 GMT
+      Vary:
+      - accept-encoding
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T040253Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562815528027E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","version":0}]}'
+    headers:
+      Content-Length:
+      - "2355"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:02:53 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2"}'
+    form: {}
+    headers:
+      Content-Length:
+      - "91"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T040253Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeTaskDefinition
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"taskDefinition":{"compatibilities":["EC2","FARGATE"],"containerDefinitions":[{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"DOMAIN","value":"master.test.feature.com"},{"name":"XRAY_HOST","value":"127.0.0.1"},{"name":"APP_ENV","value":"stage"}],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/feature:12345678912345678912345678912345678912","inferenceDevices":[],"links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/config","readOnly":true,"sourceVolume":"config"},{"containerPath":"/logs","sourceVolume":"logs"}],"name":"http","portMappings":[{"containerPort":80,"hostPort":80,"protocol":"tcp"}],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"CONFIG_DEST","value":"/config/server_variables.php"},{"name":"CONFIG_PATH","value":"/Web/Feature"},{"name":"CONFIG_INTERVAL","value":"60"}],"essential":true,"extraHosts":[],"image":"pocket/config-agent:php","inferenceDevices":[],"links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/config","sourceVolume":"config"}],"name":"config-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/kinesis-agent:latest","inferenceDevices":[],"links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/logs","sourceVolume":"logs"}],"name":"kinesis-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"APACHE_SERVICE","value":"web-Feature-master"},{"name":"CONFIG_INTERVAL","value":"60"}],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/apache-metric-agent:latest","inferenceDevices":[],"links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[],"name":"apache-metric-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":["--region","us-east-1","--local-mode"],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[],"essential":true,"extraHosts":[],"image":"pottava/xray:3.0","inferenceDevices":[],"links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[],"name":"xray","portMappings":[{"containerPort":2000,"hostPort":2000,"protocol":"udp"}],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]}],"cpu":"256","executionRoleArn":"arn:aws:iam::123456789012:role/WebFeatureTaskExecutionRole","family":"webFeature-master","memory":"1024","networkMode":"awsvpc","placementConstraints":[],"requiresAttributes":[{"name":"com.amazonaws.ecs.capability.docker-remote-api.1.17"},{"name":"ecs.capability.execution-role-ecr-pull"},{"name":"com.amazonaws.ecs.capability.docker-remote-api.1.18"},{"name":"ecs.capability.task-eni"},{"name":"com.amazonaws.ecs.capability.ecr-auth"},{"name":"com.amazonaws.ecs.capability.task-iam-role"},{"name":"ecs.capability.execution-role-awslogs"},{"name":"com.amazonaws.ecs.capability.logging-driver.awslogs"},{"name":"com.amazonaws.ecs.capability.docker-remote-api.1.19"}],"requiresCompatibilities":["FARGATE"],"revision":2,"status":"ACTIVE","taskDefinitionArn":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","taskRoleArn":"arn:aws:iam::123456789012:role/WebFeatureTaskRole","volumes":[{"host":{},"name":"logs"},{"host":{},"name":"config"}]}}'
+    headers:
+      Content-Length:
+      - "4746"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:02:53 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"containerDefinitions":[{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"DOMAIN","value":"master.test.feature.com"},{"name":"XRAY_HOST","value":"127.0.0.1"},{"name":"APP_ENV","value":"stage"}],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/feature:12345678912345678912345678912345678912","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/config","readOnly":true,"sourceVolume":"config"},{"containerPath":"/logs","sourceVolume":"logs"}],"name":"http","portMappings":[{"containerPort":80,"hostPort":80,"protocol":"tcp"}],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"CONFIG_DEST","value":"/config/server_variables.php"},{"name":"CONFIG_PATH","value":"/Web/Feature"},{"name":"CONFIG_INTERVAL","value":"60"}],"essential":true,"extraHosts":[],"image":"pocket/config-agent:php","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/config","sourceVolume":"config"}],"name":"config-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/kinesis-agent:latest","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/logs","sourceVolume":"logs"}],"name":"kinesis-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"APACHE_SERVICE","value":"web-Feature-master"},{"name":"CONFIG_INTERVAL","value":"60"}],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/apache-metric-agent:latest","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[],"name":"apache-metric-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":["--region","us-east-1","--local-mode"],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[],"essential":true,"extraHosts":[],"image":"pottava/xray:3.0","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[],"name":"xray","portMappings":[{"containerPort":2000,"hostPort":2000,"protocol":"udp"}],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]}],"cpu":"256","executionRoleArn":"arn:aws:iam::123456789012:role/WebFeatureTaskExecutionRole","family":"webFeature-master","memory":"1024","networkMode":"awsvpc","placementConstraints":[],"taskRoleArn":"arn:aws:iam::123456789012:role/WebFeatureTaskRole","volumes":[{"host":{},"name":"logs"},{"host":{},"name":"config"}]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "3907"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T040253Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.RegisterTaskDefinition
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"taskDefinition":{"compatibilities":["EC2","FARGATE"],"containerDefinitions":[{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"DOMAIN","value":"master.test.feature.com"},{"name":"XRAY_HOST","value":"127.0.0.1"},{"name":"APP_ENV","value":"stage"}],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/feature:12345678912345678912345678912345678912","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/config","readOnly":true,"sourceVolume":"config"},{"containerPath":"/logs","sourceVolume":"logs"}],"name":"http","portMappings":[{"containerPort":80,"hostPort":80,"protocol":"tcp"}],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"CONFIG_DEST","value":"/config/server_variables.php"},{"name":"CONFIG_PATH","value":"/Web/Feature"},{"name":"CONFIG_INTERVAL","value":"60"}],"essential":true,"extraHosts":[],"image":"pocket/config-agent:php","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/config","sourceVolume":"config"}],"name":"config-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/kinesis-agent:latest","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[{"containerPath":"/logs","sourceVolume":"logs"}],"name":"kinesis-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":[],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[{"name":"APACHE_SERVICE","value":"web-Feature-master"},{"name":"CONFIG_INTERVAL","value":"60"}],"essential":true,"extraHosts":[],"image":"123456789012.dkr.ecr.us-east-1.amazonaws.com/apache-metric-agent:latest","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[],"name":"apache-metric-agent","portMappings":[],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]},{"command":["--region","us-east-1","--local-mode"],"cpu":0,"dnsSearchDomains":[],"dnsServers":[],"dockerLabels":{},"dockerSecurityOptions":[],"entryPoint":[],"environment":[],"essential":true,"extraHosts":[],"image":"pottava/xray:3.0","links":[],"logConfiguration":{"logDriver":"awslogs","options":{"awslogs-group":"/ecs/webFeature/master","awslogs-region":"us-east-1","awslogs-stream-prefix":"ecs"},"secretOptions":[]},"mountPoints":[],"name":"xray","portMappings":[{"containerPort":2000,"hostPort":2000,"protocol":"udp"}],"resourceRequirements":[],"secrets":[],"systemControls":[],"ulimits":[],"volumesFrom":[]}],"cpu":"256","executionRoleArn":"arn:aws:iam::123456789012:role/WebFeatureTaskExecutionRole","family":"webFeature-master","memory":"1024","networkMode":"awsvpc","placementConstraints":[],"requiresAttributes":[{"name":"com.amazonaws.ecs.capability.docker-remote-api.1.17"},{"name":"ecs.capability.execution-role-ecr-pull"},{"name":"com.amazonaws.ecs.capability.docker-remote-api.1.18"},{"name":"ecs.capability.task-eni"},{"name":"com.amazonaws.ecs.capability.ecr-auth"},{"name":"com.amazonaws.ecs.capability.task-iam-role"},{"name":"ecs.capability.execution-role-awslogs"},{"name":"com.amazonaws.ecs.capability.logging-driver.awslogs"},{"name":"com.amazonaws.ecs.capability.docker-remote-api.1.19"}],"revision":3,"status":"ACTIVE","taskDefinitionArn":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","taskRoleArn":"arn:aws:iam::123456789012:role/WebFeatureTaskRole","volumes":[{"host":{},"name":"logs"},{"host":{},"name":"config"}]}}'
+    headers:
+      Content-Length:
+      - "4598"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:02:53 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","service":"master","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3"}'
+    form: {}
+    headers:
+      Content-Length:
+      - "139"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64)
+      X-Amz-Date:
+      - 20190711T040254Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.UpdateService
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"service":{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":0,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562815528027E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}}'
+    headers:
+      Content-Length:
+      - "2880"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:02:53 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040254Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":0,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "2897"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:02:53 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040309Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"platformVersion":"1.3.0","runningCount":0,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3066"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:03:09 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040324Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"platformVersion":"1.3.0","runningCount":0,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3066"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:03:24 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040340Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"platformVersion":"1.3.0","runningCount":0,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3066"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:03:40 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040355Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"platformVersion":"1.3.0","runningCount":0,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":1,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3066"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:03:55 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040410Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":2,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3066"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:04:10 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040426Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817774307E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.562817854004E9,"id":"e25c8ef3-1507-4b4d-b443-293aca1ddca0","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":2,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3315"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:04:25 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040441Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817874829E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.562817854004E9,"id":"e25c8ef3-1507-4b4d-b443-293aca1ddca0","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":2,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3315"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:04:41 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040457Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817874829E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817774311E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.56281789466E9,"id":"818092b1-9c4b-4b98-8246-ab4f9b18d829","message":"(service
+      master) has begun draining connections on 1 tasks."},{"createdAt":1.562817894659E9,"id":"50c79cbb-6666-428a-bf11-5378dace0519","message":"(service
+      master) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562817854004E9,"id":"e25c8ef3-1507-4b4d-b443-293aca1ddca0","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":2,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3712"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:04:57 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040512Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817874829E9},{"createdAt":1.562815436555E9,"desiredCount":1,"id":"ecs-svc/9223370474039339246","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":0,"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:2","updatedAt":1.562817905383E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.562817905415E9,"id":"c9ac4fb3-f3f9-4e51-b2b7-c97c14b12020","message":"(service
+      master) has stopped 1 running tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."},{"createdAt":1.56281789466E9,"id":"818092b1-9c4b-4b98-8246-ab4f9b18d829","message":"(service
+      master) has begun draining connections on 1 tasks."},{"createdAt":1.562817894659E9,"id":"50c79cbb-6666-428a-bf11-5378dace0519","message":"(service
+      master) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562817854004E9,"id":"e25c8ef3-1507-4b4d-b443-293aca1ddca0","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3890"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:05:12 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"cluster":"WebFeatureShared","services":["master"]}'
+    form: {}
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/x-amz-json-1.1
+      User-Agent:
+      - aws-sdk-go/0.9.0 (go1.12.6; darwin; amd64) Waiter
+      X-Amz-Date:
+      - 20190711T040527Z
+      X-Amz-Target:
+      - AmazonEC2ContainerServiceV20141113.DescribeServices
+    url: https://ecs.us-east-1.amazonaws.com/
+    method: POST
+  response:
+    body: '{"failures":[],"services":[{"clusterArn":"arn:aws:ecs:us-east-1:123456789012:cluster/WebFeatureShared","createdAt":1.562815436555E9,"deploymentConfiguration":{"maximumPercent":200,"minimumHealthyPercent":100},"deployments":[{"createdAt":1.562817774307E9,"desiredCount":1,"id":"ecs-svc/9223370474037001500","launchType":"FARGATE","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"platformVersion":"1.3.0","runningCount":1,"status":"PRIMARY","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","updatedAt":1.562817874829E9}],"desiredCount":1,"enableECSManagedTags":false,"events":[{"createdAt":1.562817926155E9,"id":"137cc583-4095-4381-8d59-3f10b6a622d3","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562817905415E9,"id":"c9ac4fb3-f3f9-4e51-b2b7-c97c14b12020","message":"(service
+      master) has stopped 1 running tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."},{"createdAt":1.56281789466E9,"id":"818092b1-9c4b-4b98-8246-ab4f9b18d829","message":"(service
+      master) has begun draining connections on 1 tasks."},{"createdAt":1.562817894659E9,"id":"50c79cbb-6666-428a-bf11-5378dace0519","message":"(service
+      master) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562817854004E9,"id":"e25c8ef3-1507-4b4d-b443-293aca1ddca0","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.56281777998E9,"id":"b6e0a881-2da0-471e-a07f-209f8a244fdc","message":"(service
+      master) has started 1 tasks: (task de4b764d-3518-4043-9cef-9ed625747570)."},{"createdAt":1.562815528034E9,"id":"9a4cd658-191a-4577-a0c0-9d7dae2bfc54","message":"(service
+      master) has reached a steady state."},{"createdAt":1.562815507818E9,"id":"04fb06d6-1e23-4117-95b2-4994c8e58eba","message":"(service
+      master) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361)"},{"createdAt":1.562815445079E9,"id":"601fea26-adb0-4a54-a7d2-4f8788e2f7f6","message":"(service
+      master) has started 1 tasks: (task f18781a4-28f9-4424-b6d5-02e8a1e2bec9)."}],"healthCheckGracePeriodSeconds":0,"launchType":"FARGATE","loadBalancers":[{"containerName":"http","containerPort":80,"targetGroupArn":"arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/WebFe-Targe-YNQT1I1MED23/b859d5492b270361"}],"networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","securityGroups":["sg-0b43d87db54556804"],"subnets":["subnet-0eb99fe10e08d5d96","subnet-04478ac1c55709b1f","subnet-0a6c00fa564f97b10","subnet-07854aac95d07bb16"]}},"pendingCount":0,"placementConstraints":[],"placementStrategy":[],"platformVersion":"LATEST","propagateTags":"NONE","roleArn":"arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS","runningCount":1,"schedulingStrategy":"REPLICA","serviceArn":"arn:aws:ecs:us-east-1:123456789012:service/master","serviceName":"master","serviceRegistries":[],"status":"ACTIVE","taskDefinition":"arn:aws:ecs:us-east-1:123456789012:task-definition/webFeature-master:3","version":0}]}'
+    headers:
+      Content-Length:
+      - "3480"
+      Content-Type:
+      - application/x-amz-json-1.1
+      Date:
+      - Thu, 11 Jul 2019 04:05:28 GMT
+    status: 200 OK
+    code: 200
+    duration: ""
