@@ -146,7 +146,7 @@ func addCommands(app *cli.App) {
 		},
 		{
 			Name:    "feature-deploy-notify",
-			Aliases: []string{"fd"},
+			Aliases: []string{"fdn"},
 			Usage:   "Notify about a feature branch",
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -217,7 +217,7 @@ func addCommands(app *cli.App) {
 		},
 		{
 			Name:    "github-deploy-notify",
-			Aliases: []string{"fd"},
+			Aliases: []string{"ghdn"},
 			Usage:   "Notify github of a deployment",
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -231,7 +231,7 @@ func addCommands(app *cli.App) {
 					EnvVar: "ENVIRONMENT",
 				},
 				cli.StringFlag{
-					Name:   "url, url",
+					Name:   "url, u",
 					Usage:  "The url of the deploy",
 					EnvVar: "URL",
 				},
