@@ -111,3 +111,17 @@ func (c *Client) UpdateDeploymentStatusForAllMatchingDeploys(owner string, repo 
 	}
 	return nil
 }
+
+func (c *Client) NotifyGitHubDeploy(owner string, repo string, branchName string, productionEnvironment bool, environment string, environmentURL string) error {
+	err := c.DeleteDeployment(owner, repo, branchName, environment)
+	if err != nil {
+		return err
+	}
+
+	err = c.CreateDeployment(owner, repo, branchName, productionEnvironment, environment, environmentURL)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

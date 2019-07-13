@@ -6,6 +6,7 @@ import (
 	"github.com/Pocket/ops-cli/internal/aws/ecs"
 	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 	"github.com/Pocket/ops-cli/internal/git"
+	"github.com/Pocket/ops-cli/internal/github"
 	"github.com/pkg/errors"
 	"gopkg.in/urfave/cli.v1"
 	"log"
@@ -200,7 +201,7 @@ func addCommands(app *cli.App) {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.New().NotifyDeployBranch(
+				return featureDeploy.New().NotifyDeployBranch(
 					c.String("param-file"),
 					c.String("template-file"),
 					c.String("branch-name"),
@@ -212,7 +213,61 @@ func addCommands(app *cli.App) {
 					c.String("github-owner"),
 					c.String("github-repo"),
 				)
-				return nil
+			},
+		},
+		{
+			Name:    "github-deploy-notify",
+			Aliases: []string{"fd"},
+			Usage:   "Notify github of a deployment",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "branch-name, b",
+					Usage:  "The branch name",
+					EnvVar: "BRANCH_NAME",
+				},
+				cli.StringFlag{
+					Name:   "environment, env",
+					Usage:  "The environment",
+					EnvVar: "ENVIRONMENT",
+				},
+				cli.StringFlag{
+					Name:   "url, url",
+					Usage:  "The url of the deploy",
+					EnvVar: "URL",
+				},
+				cli.BoolFlag{
+					Name:   "production, prod",
+					Usage:  "Production environment",
+					EnvVar: "PRODUCTION_ENVIRONMENT",
+				},
+				cli.StringFlag{
+					Name:   "github-token, ght",
+					Usage:  "The github token",
+					EnvVar: "GITHUB_TOKEN",
+				},
+				cli.StringFlag{
+					Name:   "github-owner, gho",
+					Usage:  "The github owner",
+					EnvVar: "GITHUB_OWNER",
+				},
+				cli.StringFlag{
+					Name:   "github-repo, ghr",
+					Usage:  "The github repo",
+					EnvVar: "GITHUB_REPO",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				return github.New(
+					c.String("github-token"),
+					nil,
+				).NotifyGitHubDeploy(
+					c.String("github-owner"),
+					c.String("github-repo"),
+					c.String("branch-name"),
+					c.Bool("production"),
+					c.String("environment"),
+					c.String("url"),
+				)
 			},
 		},
 		{

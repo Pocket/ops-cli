@@ -27,33 +27,41 @@ func (c *Client) DeployBranch(parametersFile, templateFile, branchName, gitSHA, 
 	}
 }
 
-func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebhook string, githubUsername string, compareURL string, githubAccessToken string, githubOwner string, githubRepo string) {
+func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebhook string, githubUsername string, compareURL string, githubAccessToken string, githubOwner string, githubRepo string) error {
 	stackNameSuffix := util.DomainSafeString(branchName)
 
 	createdSettings := settings.NewSettingsParams(parametersFile, &templateFile, &gitSHA, &branchName, &stackNameSuffix)
-	c.NotifyGithubDeployBranch(*createdSettings, githubAccessToken, githubOwner, githubRepo)
-	c.NotifySlack(*createdSettings, slackWebhook, githubUsername, compareURL)
+	err := c.NotifyGithubDeployBranch(*createdSettings, githubAccessToken, githubOwner, githubRepo)
+	if err != nil {
+		return err
+	}
+	return c.NotifySlack(*createdSettings, slackWebhook, githubUsername, compareURL)
 }
 
-func (c *Client) NotifySlack(createdSettings settings.Settings, slackWebHook string, githubUsername string, compareURL string) {
+func (c *Client) NotifySlack(createdSettings settings.Settings, slackWebHook string, githubUsername string, compareURL string) error {
 	text := "Completed deploy of <" + compareURL + "|" + *createdSettings.GitSHA + "> - *" + *createdSettings.BranchName + "* by <https://github.com/" + githubUsername + "|" + githubUsername + ">"
-
-	slackRequest := slack.NewSlackRequest(createdSettings.SlackDeploySettings.Username, createdSettings.SlackDeploySettings.Channel, createdSettings.SlackDeploySettings.Icon, text, "#36a64f", *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl())
-	err := slackRequest.SendSlackNotification(slackWebHook)
-	if err != nil {
-		panic("Error notifying slack: " + err.Error())
-	}
+	return slack.NewSlackRequest(
+		createdSettings.SlackDeploySettings.Username,
+		createdSettings.SlackDeploySettings.Channel,
+		createdSettings.SlackDeploySettings.Icon,
+		text,
+		"#36a64f",
+		*createdSettings.GetDeployUrl(),
+		*createdSettings.GetDeployUrl(),
+		*createdSettings.GetDeployUrl(),
+	).SendSlackNotification(slackWebHook)
 }
 
-func (c *Client) NotifyGithubDeployBranch(createdSettings settings.Settings, accessToken string, owner string, repo string) {
-	githubClient := github.New(accessToken, nil)
-	err := githubClient.DeleteDeployment(owner, repo, *createdSettings.BranchName, *createdSettings.GetBaseUrl())
-	if err != nil {
-		panic("Error deleting the github deployment: " + err.Error())
-	}
-	err = githubClient.CreateDeployment(owner, repo, *createdSettings.BranchName, false, *createdSettings.GetBaseUrl(), *createdSettings.GetDeployUrl())
-
-	if err != nil {
-		panic("Error created the github deployment: " + err.Error())
-	}
+func (c *Client) NotifyGithubDeployBranch(createdSettings settings.Settings, accessToken string, owner string, repo string) error {
+	return github.New(
+		accessToken,
+		nil,
+	).NotifyGitHubDeploy(
+		owner,
+		repo,
+		*createdSettings.BranchName,
+		false,
+		*createdSettings.GetBaseUrl(),
+		*createdSettings.GetDeployUrl(),
+	)
 }
