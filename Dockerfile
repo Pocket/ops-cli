@@ -4,7 +4,7 @@ ENV PATH "$PATH:/home/circleci/.local/bin"
 
 USER root
 RUN apt-get update \
- && apt-get install -y python-pip \
+ && apt-get install -y python-pip curl \
  && pip install awscli
 
 RUN mkdir -p /tmp/app
