@@ -51,3 +51,18 @@ func TestClient_UpdateDeploymentStatusForAllMatchingDeploys(t *testing.T) {
 	err := client.UpdateDeploymentStatusForAllMatchingDeploys("Pocket", "Web", "subscriptions-ending-soon", "web-feature", "pending")
 	assert.NilError(t, err)
 }
+
+func TestClient_NotifyGitHubDeploy_Initial(t *testing.T) {
+	client, r := testGithubClient("_fixtures/notify_github_deploy_initial")
+	defer r.Stop()
+	err := client.NotifyGitHubDeploy("Pocket", "Web", "subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon")
+	assert.NilError(t, err)
+}
+
+
+func TestClient_NotifyGitHubDeploy_Update(t *testing.T) {
+	client, r := testGithubClient("_fixtures/notify_github_deploy_update")
+	defer r.Stop()
+	err := client.NotifyGitHubDeploy("Pocket", "Web", "subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon")
+	assert.NilError(t, err)
+}
