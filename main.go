@@ -259,10 +259,10 @@ func addCommands(app *cli.App) {
 			Action: func(c *cli.Context) error {
 				return github.New(
 					c.String("github-token"),
-					nil,
-				).NotifyGitHubDeploy(
 					c.String("github-owner"),
 					c.String("github-repo"),
+					nil,
+				).NotifyGitHubDeploy(
 					c.String("branch-name"),
 					c.Bool("production"),
 					c.String("environment"),

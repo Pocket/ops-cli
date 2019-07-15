@@ -11,9 +11,15 @@ import (
 type Client struct {
 	client        *github.Client
 	clientContext context.Context
+	params        *Params
 }
 
-func New(accessToken string, transport http.RoundTripper) *Client {
+type Params struct {
+	owner string
+	repo  string
+}
+
+func New(accessToken string, owner string, repo string, transport http.RoundTripper) *Client {
 	clientContext := context.TODO()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{
@@ -36,15 +42,19 @@ func New(accessToken string, transport http.RoundTripper) *Client {
 	return &Client{
 		client:        client,
 		clientContext: clientContext,
+		params: &Params{
+			owner: owner,
+			repo:  repo,
+		},
 	}
 }
 
-func (c *Client) CreateDeployment(owner string, repo string, branchName string, productionEnvironment bool, environment string, environmentURL string) error {
+func (c *Client) CreateDeployment(branchName string, productionEnvironment bool, environment string, environmentURL string) error {
 	autoMerge := false
 	transientEnvironment := !productionEnvironment
 	requiredContexts := []string{}
 
-	deployment, _, err := c.client.Repositories.CreateDeployment(c.clientContext, owner, repo, &github.DeploymentRequest{
+	deployment, _, err := c.client.Repositories.CreateDeployment(c.clientContext, c.params.owner, c.params.repo, &github.DeploymentRequest{
 		Ref:                   &branchName,
 		AutoMerge:             &autoMerge,
 		Environment:           &environment,
@@ -58,7 +68,7 @@ func (c *Client) CreateDeployment(owner string, repo string, branchName string, 
 	}
 
 	status := "success"
-	_, _, err = c.client.Repositories.CreateDeploymentStatus(c.clientContext, owner, repo, *deployment.ID, &github.DeploymentStatusRequest{
+	_, _, err = c.client.Repositories.CreateDeploymentStatus(c.clientContext, c.params.owner, c.params.repo, *deployment.ID, &github.DeploymentStatusRequest{
 		State:          &status,
 		Environment:    &environment,
 		EnvironmentURL: &environmentURL,
@@ -71,12 +81,12 @@ func (c *Client) CreateDeployment(owner string, repo string, branchName string, 
 	return nil
 }
 
-func (c *Client) DeleteDeployment(owner string, repo string, ref string, environment string) error {
-	return c.UpdateDeploymentStatusForAllMatchingDeploys(owner, repo, ref, environment, "inactive")
+func (c *Client) DeleteDeployment(ref string, environment string) error {
+	return c.UpdateDeploymentStatusForAllMatchingDeploys(c.params.owner, c.params.repo, ref, environment, "inactive")
 }
 
-func (c *Client) GetDeployments(owner string, repo string, ref string, environment string) ([]*github.Deployment, error) {
-	deployments, _, err := c.client.Repositories.ListDeployments(c.clientContext, owner, repo, &github.DeploymentsListOptions{
+func (c *Client) GetDeployments(ref string, environment string) ([]*github.Deployment, error) {
+	deployments, _, err := c.client.Repositories.ListDeployments(c.clientContext, c.params.owner, c.params.repo, &github.DeploymentsListOptions{
 		Ref:         ref,
 		Environment: environment,
 	})
@@ -88,8 +98,8 @@ func (c *Client) GetDeployments(owner string, repo string, ref string, environme
 	return deployments, nil
 }
 
-func (c *Client) UpdateDeploymentStatus(owner string, repo string, status string, deploymentId int64) error {
-	_, _, err := c.client.Repositories.CreateDeploymentStatus(c.clientContext, owner, repo, deploymentId, &github.DeploymentStatusRequest{
+func (c *Client) UpdateDeploymentStatus(status string, deploymentId int64) error {
+	_, _, err := c.client.Repositories.CreateDeploymentStatus(c.clientContext, c.params.owner, c.params.repo, deploymentId, &github.DeploymentStatusRequest{
 		State: &status,
 	})
 	if err != nil {
@@ -99,12 +109,12 @@ func (c *Client) UpdateDeploymentStatus(owner string, repo string, status string
 	return nil
 }
 
-func (c *Client) UpdateDeploymentStatusForAllMatchingDeploys(owner string, repo string, ref string, environment string, status string) error {
-	deployments, err := c.GetDeployments(owner, repo, ref, environment)
+func (c *Client) UpdateDeploymentStatusForAllMatchingDeploys(ref string, environment string, status string) error {
+	deployments, err := c.GetDeployments(ref, environment)
 
 	for _, deployment := range deployments {
 		status := "inactive"
-		err = c.UpdateDeploymentStatus(owner, repo, status, *deployment.ID)
+		err = c.UpdateDeploymentStatus(status, *deployment.ID)
 		if err != nil {
 			return err
 		}
@@ -112,13 +122,13 @@ func (c *Client) UpdateDeploymentStatusForAllMatchingDeploys(owner string, repo 
 	return nil
 }
 
-func (c *Client) NotifyGitHubDeploy(owner string, repo string, branchName string, productionEnvironment bool, environment string, environmentURL string) error {
-	err := c.DeleteDeployment(owner, repo, branchName, environment)
+func (c *Client) NotifyGitHubDeploy(branchName string, productionEnvironment bool, environment string, environmentURL string) error {
+	err := c.DeleteDeployment(branchName, environment)
 	if err != nil {
 		return err
 	}
 
-	err = c.CreateDeployment(owner, repo, branchName, productionEnvironment, environment, environmentURL)
+	err = c.CreateDeployment(branchName, productionEnvironment, environment, environmentURL)
 	if err != nil {
 		return err
 	}

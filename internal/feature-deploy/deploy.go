@@ -55,10 +55,10 @@ func (c *Client) NotifySlack(createdSettings settings.Settings, slackWebHook str
 func (c *Client) NotifyGithubDeployBranch(createdSettings settings.Settings, accessToken string, owner string, repo string) error {
 	return github.New(
 		accessToken,
-		nil,
-	).NotifyGitHubDeploy(
 		owner,
 		repo,
+		nil,
+	).NotifyGitHubDeploy(
 		*createdSettings.BranchName,
 		false,
 		*createdSettings.GetBaseUrl(),

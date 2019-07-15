@@ -15,28 +15,28 @@ func testGithubClient(cassetteName string) (*Client, *recorder.Recorder) {
 		return nil
 	})
 
-	client := New("", r)
+	client := New("", "Pocket", "Web", r)
 	return client, r
 }
 
 func TestClient_CreateDeployment(t *testing.T) {
 	client, r := testGithubClient("_fixtures/create_deployment_branch")
 	defer r.Stop()
-	err := client.CreateDeployment("Pocket", "Web", "subscriptions-ending-soon", false, "web-feature", "https://feature.test.com")
+	err := client.CreateDeployment( "subscriptions-ending-soon", false, "web-feature", "https://feature.test.com")
 	assert.NilError(t, err)
 }
 
 func TestClient_DeleteDeployment(t *testing.T) {
 	client, r := testGithubClient("_fixtures/delete_deployment")
 	defer r.Stop()
-	err := client.DeleteDeployment("Pocket", "Web", "subscriptions-ending-soon", "web-feature")
+	err := client.DeleteDeployment("subscriptions-ending-soon", "web-feature")
 	assert.NilError(t, err)
 }
 
 func TestClient_GetDeployments(t *testing.T) {
 	client, r := testGithubClient("_fixtures/get_deployments")
 	defer r.Stop()
-	deployments, err := client.GetDeployments("Pocket", "Web", "subscriptions-ending-soon", "web-feature")
+	deployments, err := client.GetDeployments( "subscriptions-ending-soon", "web-feature")
 	assert.NilError(t, err)
 	assert.Assert(t, len(deployments) == 1)
 	for _, deployment := range deployments {
@@ -48,14 +48,14 @@ func TestClient_GetDeployments(t *testing.T) {
 func TestClient_UpdateDeploymentStatusForAllMatchingDeploys(t *testing.T) {
 	client, r := testGithubClient("_fixtures/update_deployment_status")
 	defer r.Stop()
-	err := client.UpdateDeploymentStatusForAllMatchingDeploys("Pocket", "Web", "subscriptions-ending-soon", "web-feature", "pending")
+	err := client.UpdateDeploymentStatusForAllMatchingDeploys( "subscriptions-ending-soon", "web-feature", "pending")
 	assert.NilError(t, err)
 }
 
 func TestClient_NotifyGitHubDeploy_Initial(t *testing.T) {
 	client, r := testGithubClient("_fixtures/notify_github_deploy_initial")
 	defer r.Stop()
-	err := client.NotifyGitHubDeploy("Pocket", "Web", "subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon")
+	err := client.NotifyGitHubDeploy( "subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon")
 	assert.NilError(t, err)
 }
 
