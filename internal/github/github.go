@@ -15,15 +15,16 @@ type Client struct {
 }
 
 type Params struct {
-	owner string
-	repo  string
+	Owner string
+	Repo  string
+	AccessToken string
 }
 
-func New(accessToken string, owner string, repo string, transport http.RoundTripper) *Client {
+func New(params *Params, transport http.RoundTripper) *Client {
 	clientContext := context.TODO()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{
-			AccessToken: accessToken,
+			AccessToken: params.AccessToken,
 		},
 	)
 
@@ -42,11 +43,22 @@ func New(accessToken string, owner string, repo string, transport http.RoundTrip
 	return &Client{
 		client:        client,
 		clientContext: clientContext,
-		params: &Params{
-			owner: owner,
-			repo:  repo,
-		},
+		params: params,
 	}
+}
+
+func (c *Client) SetTransport(transport http.RoundTripper)  {
+	tc := &http.Client{
+		Transport: transport,
+	}
+	c.clientContext = context.WithValue(c.clientContext, oauth2.HTTPClient, tc)
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{
+			AccessToken: c.params.AccessToken,
+		},
+	)
+	tc = oauth2.NewClient(c.clientContext, ts)
+	c.client = github.NewClient(tc)
 }
 
 func (c *Client) CreateDeployment(branchName string, productionEnvironment bool, environment string, environmentURL string) error {
@@ -54,7 +66,7 @@ func (c *Client) CreateDeployment(branchName string, productionEnvironment bool,
 	transientEnvironment := !productionEnvironment
 	requiredContexts := []string{}
 
-	deployment, _, err := c.client.Repositories.CreateDeployment(c.clientContext, c.params.owner, c.params.repo, &github.DeploymentRequest{
+	deployment, _, err := c.client.Repositories.CreateDeployment(c.clientContext, c.params.Owner, c.params.Repo, &github.DeploymentRequest{
 		Ref:                   &branchName,
 		AutoMerge:             &autoMerge,
 		Environment:           &environment,
@@ -68,7 +80,7 @@ func (c *Client) CreateDeployment(branchName string, productionEnvironment bool,
 	}
 
 	status := "success"
-	_, _, err = c.client.Repositories.CreateDeploymentStatus(c.clientContext, c.params.owner, c.params.repo, *deployment.ID, &github.DeploymentStatusRequest{
+	_, _, err = c.client.Repositories.CreateDeploymentStatus(c.clientContext, c.params.Owner, c.params.Repo, *deployment.ID, &github.DeploymentStatusRequest{
 		State:          &status,
 		Environment:    &environment,
 		EnvironmentURL: &environmentURL,
@@ -82,11 +94,11 @@ func (c *Client) CreateDeployment(branchName string, productionEnvironment bool,
 }
 
 func (c *Client) DeleteDeployment(ref string, environment string) error {
-	return c.UpdateDeploymentStatusForAllMatchingDeploys(c.params.owner, c.params.repo, ref, environment, "inactive")
+	return c.UpdateDeploymentStatusForAllMatchingDeploys(ref, environment, "inactive")
 }
 
 func (c *Client) GetDeployments(ref string, environment string) ([]*github.Deployment, error) {
-	deployments, _, err := c.client.Repositories.ListDeployments(c.clientContext, c.params.owner, c.params.repo, &github.DeploymentsListOptions{
+	deployments, _, err := c.client.Repositories.ListDeployments(c.clientContext, c.params.Owner, c.params.Repo, &github.DeploymentsListOptions{
 		Ref:         ref,
 		Environment: environment,
 	})
@@ -99,7 +111,7 @@ func (c *Client) GetDeployments(ref string, environment string) ([]*github.Deplo
 }
 
 func (c *Client) UpdateDeploymentStatus(status string, deploymentId int64) error {
-	_, _, err := c.client.Repositories.CreateDeploymentStatus(c.clientContext, c.params.owner, c.params.repo, deploymentId, &github.DeploymentStatusRequest{
+	_, _, err := c.client.Repositories.CreateDeploymentStatus(c.clientContext, c.params.Owner, c.params.Repo, deploymentId, &github.DeploymentStatusRequest{
 		State: &status,
 	})
 	if err != nil {

@@ -98,13 +98,16 @@ func addCommands(app *cli.App) {
 
 					return nil
 				}
-				featureDeploy.New().CleanUpBranches(
+				client.CleanUpBranches(
 					c.String("param-file"),
 					c.String("slack-webhook"),
 					olderThanDate,
-					c.String("github-token"),
-					c.String("github-owner"),
-					c.String("github-repo"), )
+					github.Params{
+						AccessToken: c.String("github-token"),
+						Owner:       c.String("github-owner"),
+						Repo:        c.String("github-repo"),
+					},
+				)
 				return nil
 			},
 		},
@@ -209,9 +212,11 @@ func addCommands(app *cli.App) {
 					c.String("slack-webhook"),
 					c.String("github-username"),
 					c.String("github-compare-url"),
-					c.String("github-token"),
-					c.String("github-owner"),
-					c.String("github-repo"),
+					github.Params{
+						AccessToken: c.String("github-token"),
+						Owner:       c.String("github-owner"),
+						Repo:        c.String("github-repo"),
+					},
 				)
 			},
 		},
@@ -257,10 +262,11 @@ func addCommands(app *cli.App) {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				return github.New(
-					c.String("github-token"),
-					c.String("github-owner"),
-					c.String("github-repo"),
+				return github.New(&github.Params{
+					AccessToken: c.String("github-token"),
+					Owner:       c.String("github-owner"),
+					Repo:        c.String("github-repo"),
+				},
 					nil,
 				).NotifyGitHubDeploy(
 					c.String("branch-name"),

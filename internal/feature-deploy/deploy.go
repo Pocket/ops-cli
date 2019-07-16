@@ -27,11 +27,11 @@ func (c *Client) DeployBranch(parametersFile, templateFile, branchName, gitSHA, 
 	}
 }
 
-func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebhook string, githubUsername string, compareURL string, githubAccessToken string, githubOwner string, githubRepo string) error {
+func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebhook string, githubUsername string, compareURL string, githubParams github.Params) error {
 	stackNameSuffix := util.DomainSafeString(branchName)
 
 	createdSettings := settings.NewSettingsParams(parametersFile, &templateFile, &gitSHA, &branchName, &stackNameSuffix)
-	err := c.NotifyGithubDeployBranch(*createdSettings, githubAccessToken, githubOwner, githubRepo)
+	err := c.NotifyGithubDeployBranch(*createdSettings, githubParams)
 	if err != nil {
 		return err
 	}
@@ -52,13 +52,8 @@ func (c *Client) NotifySlack(createdSettings settings.Settings, slackWebHook str
 	).SendSlackNotification(slackWebHook)
 }
 
-func (c *Client) NotifyGithubDeployBranch(createdSettings settings.Settings, accessToken string, owner string, repo string) error {
-	return github.New(
-		accessToken,
-		owner,
-		repo,
-		nil,
-	).NotifyGitHubDeploy(
+func (c *Client) NotifyGithubDeployBranch(createdSettings settings.Settings, githubParams github.Params) error {
+	return github.New(&githubParams, nil).NotifyGitHubDeploy(
 		*createdSettings.BranchName,
 		false,
 		*createdSettings.GetBaseUrl(),
