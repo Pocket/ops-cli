@@ -1,0 +1,278 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - go-github
+    url: https://api.github.com/repos/Pocket/Web/deployments?environment=feature.com&ref=subscriptions-ending-soon
+    method: GET
+  response:
+    body: '[{"url":"https://api.github.com/repos/Pocket/Web/deployments/156816477","id":156816477,"node_id":"MDEwOkRlcGxveW1lbnQxNTY4MTY0Nzc=","sha":"1222a88d47971de3ae3bab271971bff2e28d083e","ref":"subscriptions-ending-soon","task":"deploy","payload":{},"original_environment":"feature.com","environment":"feature.com","description":null,"creator":{"login":"bassrock","id":1010384,"node_id":"MDQ6VXNlcjEwMTAzODQ=","avatar_url":"https://avatars0.githubusercontent.com/u/1010384?v=4","gravatar_id":"","url":"https://api.github.com/users/bassrock","html_url":"https://github.com/bassrock","followers_url":"https://api.github.com/users/bassrock/followers","following_url":"https://api.github.com/users/bassrock/following{/other_user}","gists_url":"https://api.github.com/users/bassrock/gists{/gist_id}","starred_url":"https://api.github.com/users/bassrock/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/bassrock/subscriptions","organizations_url":"https://api.github.com/users/bassrock/orgs","repos_url":"https://api.github.com/users/bassrock/repos","events_url":"https://api.github.com/users/bassrock/events{/privacy}","received_events_url":"https://api.github.com/users/bassrock/received_events","type":"User","site_admin":false},"created_at":"2019-07-13T04:42:47Z","updated_at":"2019-07-13T04:42:47Z","statuses_url":"https://api.github.com/repos/Pocket/Web/deployments/156816477/statuses","repository_url":"https://api.github.com/repos/Pocket/Web"}]'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 13 Jul 2019 04:42:59 GMT
+      Etag:
+      - W/"e82e4ed23a961412817b3a6142ecff07"
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - GitHub.com
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      X-Accepted-Oauth-Scopes:
+      - repo, repo_deployment
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Github-Media-Type:
+      - github.v3; format=json
+      X-Github-Request-Id:
+      - F392:645E:1D5ADAF:2398290:5D296153
+      X-Oauth-Scopes:
+      - repo
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Remaining:
+      - "4999"
+      X-Ratelimit-Reset:
+      - "1562996579"
+      X-Xss-Protection:
+      - 1; mode=block
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"state":"inactive"}
+    form: {}
+    headers:
+      Accept:
+      - application/vnd.github.ant-man-preview+json, application/vnd.github.flash-preview+json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - go-github
+    url: https://api.github.com/repos/Pocket/Web/deployments/156816477/statuses
+    method: POST
+  response:
+    body: '{"url":"https://api.github.com/repos/Pocket/Web/deployments/156816477/statuses/224369311","id":224369311,"node_id":"MDE2OkRlcGxveW1lbnRTdGF0dXMyMjQzNjkzMTE=","state":"inactive","creator":{"login":"bassrock","id":1010384,"node_id":"MDQ6VXNlcjEwMTAzODQ=","avatar_url":"https://avatars0.githubusercontent.com/u/1010384?v=4","gravatar_id":"","url":"https://api.github.com/users/bassrock","html_url":"https://github.com/bassrock","followers_url":"https://api.github.com/users/bassrock/followers","following_url":"https://api.github.com/users/bassrock/following{/other_user}","gists_url":"https://api.github.com/users/bassrock/gists{/gist_id}","starred_url":"https://api.github.com/users/bassrock/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/bassrock/subscriptions","organizations_url":"https://api.github.com/users/bassrock/orgs","repos_url":"https://api.github.com/users/bassrock/repos","events_url":"https://api.github.com/users/bassrock/events{/privacy}","received_events_url":"https://api.github.com/users/bassrock/received_events","type":"User","site_admin":false},"description":"","environment":"feature.com","target_url":"","created_at":"2019-07-13T04:42:59Z","updated_at":"2019-07-13T04:42:59Z","deployment_url":"https://api.github.com/repos/Pocket/Web/deployments/156816477","repository_url":"https://api.github.com/repos/Pocket/Web","environment_url":"","log_url":""}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Content-Length:
+      - "1416"
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 13 Jul 2019 04:42:59 GMT
+      Etag:
+      - '"ab23b2a77f503cdcf056c26286fe5dcf"'
+      Location:
+      - https://api.github.com/repos/Pocket/Web/deployments/156816477/statuses/224369311
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - GitHub.com
+      Status:
+      - 201 Created
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      X-Accepted-Oauth-Scopes:
+      - ""
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Github-Media-Type:
+      - github.ant-man-preview; format=json, github.flash-preview; format=json
+      X-Github-Request-Id:
+      - F392:645E:1D5ADB9:239829C:5D296153
+      X-Oauth-Scopes:
+      - repo
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Remaining:
+      - "4998"
+      X-Ratelimit-Reset:
+      - "1562996579"
+      X-Xss-Protection:
+      - 1; mode=block
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"ref":"subscriptions-ending-soon","auto_merge":false,"required_contexts":[],"environment":"feature.com","transient_environment":true,"production_environment":false}
+    form: {}
+    headers:
+      Accept:
+      - application/vnd.github.ant-man-preview+json, application/vnd.github.flash-preview+json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - go-github
+    url: https://api.github.com/repos/Pocket/Web/deployments
+    method: POST
+  response:
+    body: '{"url":"https://api.github.com/repos/Pocket/Web/deployments/156816490","id":156816490,"node_id":"MDEwOkRlcGxveW1lbnQxNTY4MTY0OTA=","sha":"1222a88d47971de3ae3bab271971bff2e28d083e","ref":"subscriptions-ending-soon","task":"deploy","payload":{},"original_environment":"feature.com","environment":"feature.com","description":null,"creator":{"login":"bassrock","id":1010384,"node_id":"MDQ6VXNlcjEwMTAzODQ=","avatar_url":"https://avatars0.githubusercontent.com/u/1010384?v=4","gravatar_id":"","url":"https://api.github.com/users/bassrock","html_url":"https://github.com/bassrock","followers_url":"https://api.github.com/users/bassrock/followers","following_url":"https://api.github.com/users/bassrock/following{/other_user}","gists_url":"https://api.github.com/users/bassrock/gists{/gist_id}","starred_url":"https://api.github.com/users/bassrock/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/bassrock/subscriptions","organizations_url":"https://api.github.com/users/bassrock/orgs","repos_url":"https://api.github.com/users/bassrock/repos","events_url":"https://api.github.com/users/bassrock/events{/privacy}","received_events_url":"https://api.github.com/users/bassrock/received_events","type":"User","site_admin":false},"created_at":"2019-07-13T04:42:59Z","updated_at":"2019-07-13T04:42:59Z","statuses_url":"https://api.github.com/repos/Pocket/Web/deployments/156816490/statuses","repository_url":"https://api.github.com/repos/Pocket/Web","transient_environment":true,"production_environment":false}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Content-Length:
+      - "1553"
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 13 Jul 2019 04:43:00 GMT
+      Etag:
+      - '"fa26dff987636b4c067d543900e8f022"'
+      Last-Modified:
+      - Sat, 13 Jul 2019 04:42:59 GMT
+      Location:
+      - https://api.github.com/repos/Pocket/Web/deployments/156816490
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - GitHub.com
+      Status:
+      - 201 Created
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      X-Accepted-Oauth-Scopes:
+      - ""
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Github-Media-Type:
+      - github.ant-man-preview; format=json, github.flash-preview; format=json
+      X-Github-Request-Id:
+      - F392:645E:1D5ADC5:23982AC:5D296153
+      X-Oauth-Scopes:
+      - repo
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Remaining:
+      - "4997"
+      X-Ratelimit-Reset:
+      - "1562996579"
+      X-Xss-Protection:
+      - 1; mode=block
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"state":"success","environment":"feature.com","environment_url":"https://feature.com/subscriptions-ending-soon"}
+    form: {}
+    headers:
+      Accept:
+      - application/vnd.github.ant-man-preview+json, application/vnd.github.flash-preview+json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - go-github
+    url: https://api.github.com/repos/Pocket/Web/deployments/156816490/statuses
+    method: POST
+  response:
+    body: '{"url":"https://api.github.com/repos/Pocket/Web/deployments/156816490/statuses/224369312","id":224369312,"node_id":"MDE2OkRlcGxveW1lbnRTdGF0dXMyMjQzNjkzMTI=","state":"success","creator":{"login":"bassrock","id":1010384,"node_id":"MDQ6VXNlcjEwMTAzODQ=","avatar_url":"https://avatars0.githubusercontent.com/u/1010384?v=4","gravatar_id":"","url":"https://api.github.com/users/bassrock","html_url":"https://github.com/bassrock","followers_url":"https://api.github.com/users/bassrock/followers","following_url":"https://api.github.com/users/bassrock/following{/other_user}","gists_url":"https://api.github.com/users/bassrock/gists{/gist_id}","starred_url":"https://api.github.com/users/bassrock/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/bassrock/subscriptions","organizations_url":"https://api.github.com/users/bassrock/orgs","repos_url":"https://api.github.com/users/bassrock/repos","events_url":"https://api.github.com/users/bassrock/events{/privacy}","received_events_url":"https://api.github.com/users/bassrock/received_events","type":"User","site_admin":false},"description":"","environment":"feature.com","target_url":"","created_at":"2019-07-13T04:43:00Z","updated_at":"2019-07-13T04:43:00Z","deployment_url":"https://api.github.com/repos/Pocket/Web/deployments/156816490","repository_url":"https://api.github.com/repos/Pocket/Web","environment_url":"https://feature.com/subscriptions-ending-soon","log_url":""}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Content-Length:
+      - "1475"
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 13 Jul 2019 04:43:00 GMT
+      Etag:
+      - '"4ee4760f1641f2b8c56d5cc3370c165a"'
+      Location:
+      - https://api.github.com/repos/Pocket/Web/deployments/156816490/statuses/224369312
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - GitHub.com
+      Status:
+      - 201 Created
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      X-Accepted-Oauth-Scopes:
+      - ""
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Github-Media-Type:
+      - github.ant-man-preview; format=json, github.flash-preview; format=json
+      X-Github-Request-Id:
+      - F392:645E:1D5ADE3:23982D4:5D296154
+      X-Oauth-Scopes:
+      - repo
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Remaining:
+      - "4996"
+      X-Ratelimit-Reset:
+      - "1562996579"
+      X-Xss-Protection:
+      - 1; mode=block
+    status: 201 Created
+    code: 201
+    duration: ""

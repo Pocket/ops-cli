@@ -6,6 +6,7 @@ import (
 	"github.com/Pocket/ops-cli/internal/aws/ecs"
 	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 	"github.com/Pocket/ops-cli/internal/git"
+	"github.com/Pocket/ops-cli/internal/github"
 	"github.com/pkg/errors"
 	"gopkg.in/urfave/cli.v1"
 	"log"
@@ -67,6 +68,21 @@ func addCommands(app *cli.App) {
 					EnvVar: "DAYS_OLD",
 					Value:  8,
 				},
+				cli.StringFlag{
+					Name:   "github-token, ght",
+					Usage:  "The github token",
+					EnvVar: "GITHUB_TOKEN",
+				},
+				cli.StringFlag{
+					Name:   "github-owner, gho",
+					Usage:  "The github owner",
+					EnvVar: "GITHUB_OWNER",
+				},
+				cli.StringFlag{
+					Name:   "github-repo, ghr",
+					Usage:  "The github repo",
+					EnvVar: "GITHUB_REPO",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				stackPrefix := c.String("stack-prefix")
@@ -82,8 +98,16 @@ func addCommands(app *cli.App) {
 
 					return nil
 				}
-
-				client.CleanUpBranches(c.String("param-file"), c.String("slack-webhook"), olderThanDate)
+				client.CleanUpBranches(
+					c.String("param-file"),
+					c.String("slack-webhook"),
+					olderThanDate,
+					github.Params{
+						AccessToken: c.String("github-token"),
+						Owner:       c.String("github-owner"),
+						Repo:        c.String("github-repo"),
+					},
+				)
 				return nil
 			},
 		},
@@ -125,7 +149,7 @@ func addCommands(app *cli.App) {
 		},
 		{
 			Name:    "feature-deploy-notify",
-			Aliases: []string{"fd"},
+			Aliases: []string{"fdn"},
 			Usage:   "Notify about a feature branch",
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -163,10 +187,93 @@ func addCommands(app *cli.App) {
 					Usage:  "The github compare-url",
 					EnvVar: "GITHUB_COMPARE_URL",
 				},
+				cli.StringFlag{
+					Name:   "github-token, ght",
+					Usage:  "The github token",
+					EnvVar: "GITHUB_TOKEN",
+				},
+				cli.StringFlag{
+					Name:   "github-owner, gho",
+					Usage:  "The github owner",
+					EnvVar: "GITHUB_OWNER",
+				},
+				cli.StringFlag{
+					Name:   "github-repo, ghr",
+					Usage:  "The github repo",
+					EnvVar: "GITHUB_REPO",
+				},
 			},
 			Action: func(c *cli.Context) error {
-				featureDeploy.New().NotifyDeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
-				return nil
+				return featureDeploy.New().NotifyDeployBranch(
+					c.String("param-file"),
+					c.String("template-file"),
+					c.String("branch-name"),
+					c.String("git-sha"),
+					c.String("slack-webhook"),
+					c.String("github-username"),
+					c.String("github-compare-url"),
+					github.Params{
+						AccessToken: c.String("github-token"),
+						Owner:       c.String("github-owner"),
+						Repo:        c.String("github-repo"),
+					},
+				)
+			},
+		},
+		{
+			Name:    "github-deploy-notify",
+			Aliases: []string{"ghdn"},
+			Usage:   "Notify github of a deployment",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "branch-name, b",
+					Usage:  "The branch name",
+					EnvVar: "BRANCH_NAME",
+				},
+				cli.StringFlag{
+					Name:   "environment, env",
+					Usage:  "The environment",
+					EnvVar: "ENVIRONMENT",
+				},
+				cli.StringFlag{
+					Name:   "url, u",
+					Usage:  "The url of the deploy",
+					EnvVar: "URL",
+				},
+				cli.BoolFlag{
+					Name:   "production, prod",
+					Usage:  "Production environment",
+					EnvVar: "PRODUCTION_ENVIRONMENT",
+				},
+				cli.StringFlag{
+					Name:   "github-token, ght",
+					Usage:  "The github token",
+					EnvVar: "GITHUB_TOKEN",
+				},
+				cli.StringFlag{
+					Name:   "github-owner, gho",
+					Usage:  "The github owner",
+					EnvVar: "GITHUB_OWNER",
+				},
+				cli.StringFlag{
+					Name:   "github-repo, ghr",
+					Usage:  "The github repo",
+					EnvVar: "GITHUB_REPO",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				return github.New(&github.Params{
+					AccessToken: c.String("github-token"),
+					Owner:       c.String("github-owner"),
+					Repo:        c.String("github-repo"),
+				},
+					nil,
+				).NotifyGitHubDeploy(
+					c.String("branch-name"),
+					c.Bool("production"),
+					c.String("environment"),
+					c.String("url"),
+				)
 			},
 		},
 		{

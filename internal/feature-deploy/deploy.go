@@ -1,6 +1,7 @@
 package feature_deploy
 
 import (
+	"github.com/Pocket/ops-cli/internal/github"
 	"github.com/Pocket/ops-cli/internal/settings"
 	"github.com/Pocket/ops-cli/internal/slack"
 	"github.com/Pocket/ops-cli/internal/util"
@@ -26,16 +27,36 @@ func (c *Client) DeployBranch(parametersFile, templateFile, branchName, gitSHA, 
 	}
 }
 
-func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebHook string, githubUsername string, compareURL string) {
+func (c *Client) NotifyDeployBranch(parametersFile, templateFile, branchName, gitSHA, slackWebhook string, githubUsername string, compareURL string, githubParams github.Params) error {
 	stackNameSuffix := util.DomainSafeString(branchName)
 
 	createdSettings := settings.NewSettingsParams(parametersFile, &templateFile, &gitSHA, &branchName, &stackNameSuffix)
-
-	text := "Completed deploy of <" + compareURL + "|" + gitSHA + "> - *" + branchName + "* by <https://github.com/" + githubUsername + "|" + githubUsername + ">"
-
-	slackRequest := slack.NewSlackRequest(createdSettings.SlackDeploySettings.Username, createdSettings.SlackDeploySettings.Channel, createdSettings.SlackDeploySettings.Icon, text, "#36a64f", *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl(), *createdSettings.GetDeployUrl())
-	err := slackRequest.SendSlackNotification(slackWebHook)
+	err := c.NotifyGithubDeployBranch(*createdSettings, githubParams)
 	if err != nil {
-		panic("Error notifying slack: " + err.Error())
+		return err
 	}
+	return c.NotifySlack(*createdSettings, slackWebhook, githubUsername, compareURL)
+}
+
+func (c *Client) NotifySlack(createdSettings settings.Settings, slackWebHook string, githubUsername string, compareURL string) error {
+	text := "Completed deploy of <" + compareURL + "|" + *createdSettings.GitSHA + "> - *" + *createdSettings.BranchName + "* by <https://github.com/" + githubUsername + "|" + githubUsername + ">"
+	return slack.NewSlackRequest(
+		createdSettings.SlackDeploySettings.Username,
+		createdSettings.SlackDeploySettings.Channel,
+		createdSettings.SlackDeploySettings.Icon,
+		text,
+		"#36a64f",
+		*createdSettings.GetDeployUrl(),
+		*createdSettings.GetDeployUrl(),
+		*createdSettings.GetDeployUrl(),
+	).SendSlackNotification(slackWebHook)
+}
+
+func (c *Client) NotifyGithubDeployBranch(createdSettings settings.Settings, githubParams github.Params) error {
+	return github.New(&githubParams, nil).NotifyGitHubDeploy(
+		*createdSettings.BranchName,
+		false,
+		*createdSettings.GetBaseUrl(),
+		*createdSettings.GetDeployUrl(),
+	)
 }
