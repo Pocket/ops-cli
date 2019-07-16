@@ -16,11 +16,11 @@ func (c *Client) CleanUpBranches(paramFilePath string, slackWebHook string, olde
 	for _, branchName := range branchesToDelete {
 		formattedBranchName := util.DomainSafeString(branchName)
 		branchSettings := settings.NewSettingsParams(paramFilePath, nil, nil, &branchName, &formattedBranchName)
-		c.CleanUpBranch(branchSettings, &slackWebHook, githubParams)
+		c.CleanUpBranch(branchSettings, &slackWebHook, &githubParams)
 	}
 }
 
-func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook *string, githubParams github.Params) {
+func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook *string, githubParams *github.Params) {
 	err := c.cloudWatchLogsClient.ExportLogGroupAndWait(*settings.LogGroupPrefix+*settings.FormattedBranchName, *settings.ArchiveLogsBucketName)
 	if err != nil {
 		panic("There was an error backing up the feature logs: " + err.Error())
@@ -28,7 +28,9 @@ func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook *string
 
 	c.cloudFormationClient.DeleteStack(*settings.StackName)
 
-	c.GithubNotify(settings, githubParams)
+	if githubParams != nil {
+		c.GithubNotify(settings, githubParams)
+	}
 
 	if slackWebHook != nil {
 		c.SlackNotify(settings, slackWebHook)
@@ -45,8 +47,8 @@ func (c *Client) SlackNotify(settings *settings.Settings, slackWebHook *string) 
 	}
 }
 
-func (c *Client) GithubNotify(settings *settings.Settings, githubParams github.Params) {
-	err := github.New(&githubParams, nil).DeleteDeployment(*settings.BranchName, *settings.GetBaseUrl())
+func (c *Client) GithubNotify(settings *settings.Settings, githubParams *github.Params) {
+	err := github.New(githubParams, nil).DeleteDeployment(*settings.BranchName, *settings.GetBaseUrl())
 	if err != nil {
 		panic("Error notifying github: " + err.Error())
 	}

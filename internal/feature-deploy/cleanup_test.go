@@ -14,5 +14,5 @@ func TestClient_CleanUpBranch(t *testing.T) {
 	templateFilePath := "_fixtures/template_cloudformation.yml"
 	branchName := "master"
 	createdSettings := settings.NewSettingsParams("_fixtures/template_parameters.json", &templateFilePath, nil, &branchName , &branchName)
-	client.CleanUpBranch(createdSettings, nil)
+	client.CleanUpBranch(createdSettings, nil, nil)
 }
