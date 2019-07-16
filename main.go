@@ -350,7 +350,7 @@ func addCommands(app *cli.App) {
 			Action: func(c *cli.Context) error {
 				ecsClient := ecs.New()
 				clusterName := c.String("cluster-name")
-				serviceName := c.String("cluster-name")
+				serviceName := c.String("service-name")
 				imageNames := c.StringSlice("image-names")
 				ecsClient.DeployUpdate(&clusterName, &serviceName, &imageNames)
 				return nil
