@@ -3,9 +3,11 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"time"
 	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
 	"github.com/Pocket/ops-cli/internal/aws/ecs"
 	"github.com/Pocket/ops-cli/internal/git"
+	"github.com/Pocket/ops-cli/internal/github"
 	"gopkg.in/urfave/cli.v1"
 	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 )
@@ -17,9 +19,9 @@ func FeatureCleanup() cli.Command {
 		Usage:   "Cleanup all unactive stacks with the prefix",
 		Flags: []cli.Flag{
 			cli.StringFlag{
-				Name:   "stack-prefix, p",
-				Usage:  "The stack prefix for these deployments (WebFeatureDeploy-)",
-				EnvVar: "STACK_PREFIX",
+				Name:   "param-file, p",
+				Usage:  "The parameter file",
+				EnvVar: "PARAM_FILE",
 			},
 			cli.BoolTFlag{
 				Name:   "dry-run, d",
@@ -31,11 +33,35 @@ func FeatureCleanup() cli.Command {
 				Usage:  "The slack webhook",
 				EnvVar: "SLACK_WEBHOOK",
 			},
+			cli.IntFlag{
+				Name:   "days-old, do",
+				Usage:  "The days old",
+				EnvVar: "DAYS_OLD",
+				Value:  8,
+			},
+			cli.StringFlag{
+				Name:   "github-token, ght",
+				Usage:  "The github token",
+				EnvVar: "GITHUB_TOKEN",
+			},
+			cli.StringFlag{
+				Name:   "github-owner, gho",
+				Usage:  "The github owner",
+				EnvVar: "GITHUB_OWNER",
+			},
+			cli.StringFlag{
+				Name:   "github-repo, ghr",
+				Usage:  "The github repo",
+				EnvVar: "GITHUB_REPO",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			stackPrefix := c.String("stack-prefix")
+			olderThanDate := time.Now().AddDate(0, 0, -c.Int("days-old"))
+			client := featureDeploy.New()
+
 			if c.BoolT("dry-run") {
-				stackBranchNames := featureDeploy.BranchesToDelete(stackPrefix)
+				stackBranchNames := client.StacksToDelete(stackPrefix, olderThanDate)
 
 				for _, stackBranchName := range stackBranchNames {
 					fmt.Println(stackBranchName)
@@ -43,15 +69,23 @@ func FeatureCleanup() cli.Command {
 
 				return nil
 			}
-
-			featureDeploy.CleanUpBranches(stackPrefix, c.String("slack-webhook"))
+			client.CleanUpBranches(
+				c.String("param-file"),
+				c.String("slack-webhook"),
+				olderThanDate,
+				github.Params{
+					AccessToken: c.String("github-token"),
+					Owner:       c.String("github-owner"),
+					Repo:        c.String("github-repo"),
+				},
+			)
 			return nil
 		},
 	}
 }
 
 func FeatureDeploy() cli.Command {
-	return cli.Command {
+	return cli.Command{
 		Name:    "feature-deploy",
 		Aliases: []string{"fd"},
 		Usage:   "Deploy a feature branch",
@@ -83,7 +117,7 @@ func FeatureDeploy() cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			featureDeploy.DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
+			featureDeploy.New().DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
 			return nil
 		},
 	}
@@ -92,7 +126,7 @@ func FeatureDeploy() cli.Command {
 func FeatureDeployNotify() cli.Command {
 	return cli.Command{
 		Name:    "feature-deploy-notify",
-		Aliases: []string{"fd"},
+		Aliases: []string{"fdn"},
 		Usage:   "Notify about a feature branch",
 		Flags: []cli.Flag{
 			cli.StringFlag{
@@ -130,10 +164,96 @@ func FeatureDeployNotify() cli.Command {
 				Usage:  "The github compare-url",
 				EnvVar: "GITHUB_COMPARE_URL",
 			},
+			cli.StringFlag{
+				Name:   "github-token, ght",
+				Usage:  "The github token",
+				EnvVar: "GITHUB_TOKEN",
+			},
+			cli.StringFlag{
+				Name:   "github-owner, gho",
+				Usage:  "The github owner",
+				EnvVar: "GITHUB_OWNER",
+			},
+			cli.StringFlag{
+				Name:   "github-repo, ghr",
+				Usage:  "The github repo",
+				EnvVar: "GITHUB_REPO",
+			},
 		},
 		Action: func(c *cli.Context) error {
-			featureDeploy.NotifyDeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("slack-webhook"), c.String("github-username"), c.String("github-compare-url"))
-			return nil
+			return featureDeploy.New().NotifyDeployBranch(
+				c.String("param-file"),
+				c.String("template-file"),
+				c.String("branch-name"),
+				c.String("git-sha"),
+				c.String("slack-webhook"),
+				c.String("github-username"),
+				c.String("github-compare-url"),
+				github.Params{
+					AccessToken: c.String("github-token"),
+					Owner:       c.String("github-owner"),
+					Repo:        c.String("github-repo"),
+				},
+			)
+		},
+	}
+}
+
+func GithubDeployNotify() cli.Command {
+	return cli.Command{
+		Name:    "github-deploy-notify",
+		Aliases: []string{"ghdn"},
+		Usage:   "Notify github of a deployment",
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:   "branch-name, b",
+				Usage:  "The branch name",
+				EnvVar: "BRANCH_NAME",
+			},
+			cli.StringFlag{
+				Name:   "environment, env",
+				Usage:  "The environment",
+				EnvVar: "ENVIRONMENT",
+			},
+			cli.StringFlag{
+				Name:   "url, u",
+				Usage:  "The url of the deploy",
+				EnvVar: "URL",
+			},
+			cli.BoolFlag{
+				Name:   "production, prod",
+				Usage:  "Production environment",
+				EnvVar: "PRODUCTION_ENVIRONMENT",
+			},
+			cli.StringFlag{
+				Name:   "github-token, ght",
+				Usage:  "The github token",
+				EnvVar: "GITHUB_TOKEN",
+			},
+			cli.StringFlag{
+				Name:   "github-owner, gho",
+				Usage:  "The github owner",
+				EnvVar: "GITHUB_OWNER",
+			},
+			cli.StringFlag{
+				Name:   "github-repo, ghr",
+				Usage:  "The github repo",
+				EnvVar: "GITHUB_REPO",
+			},
+		},
+		Action: func(c *cli.Context) error {
+			return github.New(&github.Params{
+				AccessToken: c.String("github-token"),
+				Owner:       c.String("github-owner"),
+				Repo:        c.String("github-repo"),
+			},
+				nil,
+			).NotifyGitHubDeploy(
+				c.String("branch-name"),
+				c.Bool("production"),
+				c.String("environment"),
+				c.String("url"),
+			)
 		},
 	}
 }
@@ -219,7 +339,7 @@ func EcsDeploy() cli.Command {
 		Action: func(c *cli.Context) error {
 			ecsClient := ecs.New()
 			clusterName := c.String("cluster-name")
-			serviceName := c.String("cluster-name")
+			serviceName := c.String("service-name")
 			imageNames := c.StringSlice("image-names")
 			ecsClient.DeployUpdate(&clusterName, &serviceName, &imageNames)
 			return nil

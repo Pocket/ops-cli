@@ -42,6 +42,7 @@ func addCommands(app *cli.App) {
 		commands.FeatureCleanup(),
 		commands.FeatureDeploy(),
 		commands.FeatureDeployNotify(),
+		commands.GithubDeployNotify(),
 		commands.StackExists(),
 		commands.CreateStack(),
 		commands.EcsDeploy(),
