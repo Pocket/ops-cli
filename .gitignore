@@ -18,3 +18,6 @@ vendor
 .idea
 !.idea/codeStyles/*.xml
 report.xml
+
+# ignores files from `go mod download`
+src
