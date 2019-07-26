@@ -1,13 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
-	"github.com/Pocket/ops-cli/internal/aws/ecs"
-	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
-	"github.com/Pocket/ops-cli/internal/git"
-	"github.com/Pocket/ops-cli/internal/github"
-	"github.com/pkg/errors"
 	"github.com/Pocket/ops-cli/internal/commands"
 	"gopkg.in/urfave/cli.v1"
 	"log"
