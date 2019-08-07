@@ -240,6 +240,11 @@ func GithubDeployNotify() cli.Command {
 				Usage:  "The github repo",
 				EnvVar: "GITHUB_REPO",
 			},
+			cli.StringFlag{
+				Name: "log-url, lurl",
+				Usage: "The AWS log group url",
+				EnvVar: "LOG_URL",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			return github.New(&github.Params{
@@ -253,6 +258,7 @@ func GithubDeployNotify() cli.Command {
 				c.Bool("production"),
 				c.String("environment"),
 				c.String("url"),
+				c.String("log-url"),
 			)
 		},
 	}

@@ -208,7 +208,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"state":"success","environment":"feature.com","environment_url":"https://feature.com/subscriptions-ending-soon"}
+      {"state":"success","environment":"feature.com","environment_url":"https://feature.com/subscriptions-ending-soon","log_url":"https://logUrl.com"}
     form: {}
     headers:
       Accept:

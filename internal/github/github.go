@@ -61,7 +61,7 @@ func (c *Client) SetTransport(transport http.RoundTripper)  {
 	c.client = github.NewClient(tc)
 }
 
-func (c *Client) CreateDeployment(branchName string, productionEnvironment bool, environment string, environmentURL string) error {
+func (c *Client) CreateDeployment(branchName string, productionEnvironment bool, environment string, environmentURL string, logURL string) error {
 	autoMerge := false
 	transientEnvironment := !productionEnvironment
 	requiredContexts := []string{}
@@ -84,6 +84,7 @@ func (c *Client) CreateDeployment(branchName string, productionEnvironment bool,
 		State:          &status,
 		Environment:    &environment,
 		EnvironmentURL: &environmentURL,
+		LogURL:         &logURL,
 	})
 
 	if err != nil {
@@ -134,13 +135,13 @@ func (c *Client) UpdateDeploymentStatusForAllMatchingDeploys(ref string, environ
 	return nil
 }
 
-func (c *Client) NotifyGitHubDeploy(branchName string, productionEnvironment bool, environment string, environmentURL string) error {
+func (c *Client) NotifyGitHubDeploy(branchName string, productionEnvironment bool, environment string, environmentURL string, logURL string) error {
 	err := c.DeleteDeployment(branchName, environment)
 	if err != nil {
 		return err
 	}
 
-	err = c.CreateDeployment(branchName, productionEnvironment, environment, environmentURL)
+	err = c.CreateDeployment(branchName, productionEnvironment, environment, environmentURL, logURL)
 	if err != nil {
 		return err
 	}

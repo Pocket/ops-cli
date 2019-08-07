@@ -26,7 +26,7 @@ func testGithubClient(cassetteName string) (*Client, *recorder.Recorder) {
 func TestClient_CreateDeployment(t *testing.T) {
 	client, r := testGithubClient("_fixtures/create_deployment_branch")
 	defer r.Stop()
-	err := client.CreateDeployment("subscriptions-ending-soon", false, "web-feature", "https://feature.test.com")
+	err := client.CreateDeployment("subscriptions-ending-soon", false, "web-feature", "https://feature.test.com", "https://logUrl.com")
 	assert.NilError(t, err)
 }
 
@@ -59,13 +59,13 @@ func TestClient_UpdateDeploymentStatusForAllMatchingDeploys(t *testing.T) {
 func TestClient_NotifyGitHubDeploy_Initial(t *testing.T) {
 	client, r := testGithubClient("_fixtures/notify_github_deploy_initial")
 	defer r.Stop()
-	err := client.NotifyGitHubDeploy("subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon")
+	err := client.NotifyGitHubDeploy("subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon", "https://logUrl.com")
 	assert.NilError(t, err)
 }
 
 func TestClient_NotifyGitHubDeploy_Update(t *testing.T) {
 	client, r := testGithubClient("_fixtures/notify_github_deploy_update")
 	defer r.Stop()
-	err := client.NotifyGitHubDeploy( "subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon")
+	err := client.NotifyGitHubDeploy( "subscriptions-ending-soon", false, "feature.com", "https://feature.com/subscriptions-ending-soon", "https://logUrl.com")
 	assert.NilError(t, err)
 }

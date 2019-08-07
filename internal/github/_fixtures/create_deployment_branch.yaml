@@ -75,7 +75,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"state":"success","environment":"web-feature","environment_url":"https://feature.test.com"}
+      {"state":"success","environment":"web-feature","environment_url":"https://feature.test.com","log_url":"https://logUrl.com"}
     form: {}
     headers:
       Accept:

@@ -58,5 +58,6 @@ func (c *Client) NotifyGithubDeployBranch(createdSettings settings.Settings, git
 		false,
 		*createdSettings.GetBaseUrl(),
 		*createdSettings.GetDeployUrl(),
+		*createdSettings.GetLogUrl(),
 	)
 }
