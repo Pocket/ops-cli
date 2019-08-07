@@ -167,6 +167,11 @@ func (settings *Settings) GetDeployUrl() *string {
 	return &url
 }
 
+func (settings *Settings) GetLogUrl() *string {
+	url := "https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logEventViewer:group=" + *settings.LogGroupPrefix + *settings.FormattedBranchName
+	return &url
+}
+
 func (settings *Settings) setFilePath(filePath string) {
 	file, err := os.Open(filePath)
 	if err != nil {
