@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"errors"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
 	"net/http"
@@ -14,7 +15,7 @@ type Client struct {
 	clientContext context.Context
 }
 
-func (c *Client) setTransport(transport *http.Transport)  {
+func (c *Client) setTransport(transport *http.Transport) {
 	c.client.Config.HTTPClient.Transport = transport
 }
 
@@ -29,7 +30,7 @@ func New() *Client {
 	}
 }
 
-func (c *Client) SetTransport(transport http.RoundTripper)  {
+func (c *Client) SetTransport(transport http.RoundTripper) {
 	c.client.Config.HTTPClient.Transport = transport
 }
 
@@ -119,7 +120,7 @@ func (c *Client) wait(cluster, service, arn *string) error {
 	return c.client.WaitUntilServicesStable(c.clientContext, &ecs.DescribeServicesInput{
 		Cluster:  cluster,
 		Services: []string{*service},
-	})
+	}, aws.WithWaiterMaxAttempts(80))
 }
 
 func (c *Client) getLatestDeployment(cluster, service *string) (*ecs.Deployment, error) {
