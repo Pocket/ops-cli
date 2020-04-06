@@ -34,7 +34,7 @@ func (c *Client) SetTransport(transport http.RoundTripper) {
 	c.client.Config.HTTPClient.Transport = transport
 }
 
-func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNames *[]string) {
+func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNames *[]string, waitStable bool) {
 
 	deployment, err := c.getLatestDeployment(clusterName, serviceName)
 	if err != nil {
@@ -52,9 +52,11 @@ func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNam
 		panic("error updating the service, " + err.Error())
 	}
 
-	err = c.wait(clusterName, serviceName, &taskDefinition)
-	if err != nil {
-		panic("error waiting for the service, " + err.Error())
+	if waitStable {
+		err = c.wait(clusterName, serviceName, &taskDefinition)
+		if err != nil {
+			panic("error waiting for the service, " + err.Error())
+		}
 	}
 }
 

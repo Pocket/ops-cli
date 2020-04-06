@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 )
 
-func (c *Client) DeployBranch(parametersFile, templateFile, branchName, gitSHA, imageName string) {
+func (c *Client) DeployBranch(parametersFile, templateFile, branchName, gitSHA, imageName string, waitStable bool) {
 	stackNameSuffix := util.DomainSafeString(branchName)
 
 	createdSettings := settings.NewSettingsParams(parametersFile, &templateFile, &gitSHA, &branchName, &stackNameSuffix)
@@ -21,9 +21,9 @@ func (c *Client) DeployBranch(parametersFile, templateFile, branchName, gitSHA, 
 			TemplateBody: createdSettings.TemplateBody,
 			OnFailure:    createdSettings.OnFailure,
 			Capabilities: createdSettings.Capabilities,
-		})
+		}, waitStable)
 	} else {
-		c.ecsClient.DeployUpdate(createdSettings.ECSCluster, &stackNameSuffix, &[]string{imageName})
+		c.ecsClient.DeployUpdate(createdSettings.ECSCluster, &stackNameSuffix, &[]string{imageName}, waitStable)
 	}
 }
 

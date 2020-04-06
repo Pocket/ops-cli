@@ -3,13 +3,13 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"time"
 	"github.com/Pocket/ops-cli/internal/aws/cloudformation"
 	"github.com/Pocket/ops-cli/internal/aws/ecs"
+	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
 	"github.com/Pocket/ops-cli/internal/git"
 	"github.com/Pocket/ops-cli/internal/github"
 	"gopkg.in/urfave/cli.v1"
-	featureDeploy "github.com/Pocket/ops-cli/internal/feature-deploy"
+	"time"
 )
 
 func FeatureCleanup() cli.Command {
@@ -115,9 +115,14 @@ func FeatureDeploy() cli.Command {
 				Usage:  "The image name",
 				EnvVar: "IMAGE_NAME",
 			},
+			cli.BoolFlag{
+				Name:   "wait-stable, w",
+				Usage:  "The wait for stable flag",
+				EnvVar: "WAIT_STABLE",
+			},
 		},
 		Action: func(c *cli.Context) error {
-			featureDeploy.New().DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"))
+			featureDeploy.New().DeployBranch(c.String("param-file"), c.String("template-file"), c.String("branch-name"), c.String("git-sha"), c.String("image-name"), c.Bool("wait-stable"))
 			return nil
 		},
 	}
@@ -241,8 +246,8 @@ func GithubDeployNotify() cli.Command {
 				EnvVar: "GITHUB_REPO",
 			},
 			cli.StringFlag{
-				Name: "log-url, lurl",
-				Usage: "The AWS log group url",
+				Name:   "log-url, lurl",
+				Usage:  "The AWS log group url",
 				EnvVar: "LOG_URL",
 			},
 		},
@@ -309,12 +314,17 @@ func CreateStack() cli.Command {
 				Usage:  "The template file",
 				EnvVar: "TEMPLATE_FILE",
 			},
+			cli.BoolFlag{
+				Name:   "wait-stable, w",
+				Usage:  "The wait for stable flag",
+				EnvVar: "WAIT_STABLE",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			cloudformationClient := cloudformation.New()
 
 			stackName := c.String("stack-name")
-			cloudformationClient.CreateStackParams(c.String("param-file"), &stackName, c.String("template-file"))
+			cloudformationClient.CreateStackParams(c.String("param-file"), &stackName, c.String("template-file"), c.Bool("wait-stable"))
 			return nil
 		},
 	}
@@ -347,7 +357,7 @@ func EcsDeploy() cli.Command {
 			clusterName := c.String("cluster-name")
 			serviceName := c.String("service-name")
 			imageNames := c.StringSlice("image-names")
-			ecsClient.DeployUpdate(&clusterName, &serviceName, &imageNames)
+			ecsClient.DeployUpdate(&clusterName, &serviceName, &imageNames, true)
 			return nil
 		},
 	}

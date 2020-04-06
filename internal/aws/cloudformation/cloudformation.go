@@ -68,16 +68,18 @@ func (c *Client) StackExists(stackName string) bool {
 	return true
 }
 
-func (c *Client) CreateStack(settings *cloudformation.CreateStackInput) *string {
+func (c *Client) CreateStack(settings *cloudformation.CreateStackInput, waitForStable bool) *string {
 	createResponse, err := c.client.CreateStackRequest(settings).Send(c.clientContext)
 
 	if err != nil {
 		panic("error creating stack," + err.Error())
 	}
 
-	err = c.client.WaitUntilStackCreateComplete(c.clientContext, &cloudformation.DescribeStacksInput{
-		StackName: createResponse.StackId,
-	})
+	if waitForStable {
+		err = c.client.WaitUntilStackCreateComplete(c.clientContext, &cloudformation.DescribeStacksInput{
+			StackName: createResponse.StackId,
+		})
+	}
 
 	if err != nil {
 		panic("error waiting for stack complete, " + err.Error())
@@ -86,7 +88,7 @@ func (c *Client) CreateStack(settings *cloudformation.CreateStackInput) *string 
 	return createResponse.StackId
 }
 
-func (c *Client) CreateStackParams(paramFilePath string, stackName *string, templatefilePath string) *string {
+func (c *Client) CreateStackParams(paramFilePath string, stackName *string, templatefilePath string, waitForStable bool) *string {
 	createdSettings := settings.NewSettingsParams(paramFilePath, &templatefilePath, nil, nil, nil)
 	createdSettings.StackName = stackName
 	stackId := c.CreateStack(&cloudformation.CreateStackInput{
@@ -96,7 +98,7 @@ func (c *Client) CreateStackParams(paramFilePath string, stackName *string, temp
 		TemplateBody: createdSettings.TemplateBody,
 		OnFailure:    createdSettings.OnFailure,
 		Capabilities: createdSettings.Capabilities,
-	})
+	}, waitForStable)
 	return stackId
 }
 
