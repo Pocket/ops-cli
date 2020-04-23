@@ -7,6 +7,10 @@ RUN apt-get update \
  && apt-get install -y python-pip curl \
  && pip install awscli
 
+RUN curl -Os https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip \
+	&& unzip terraform_0.12.24_linux_amd64.zip -d /usr/local/bin \ 
+	&& rm terraform_0.12.24_linux_amd64.zip
+
 RUN mkdir -p /tmp/app
 
 COPY ./ /tmp/app/
