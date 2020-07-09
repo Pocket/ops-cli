@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-func (c *Client) CleanUpBranches(paramFilePath string, slackWebHook string, olderThanDate time.Time, githubParams github.Params) {
+func (c *Client) CleanUpBranches(paramFilePath string, slackWebHook string, olderThanDate time.Time, githubParams github.Params, mainBranch string) {
 	stackPrefix := *settings.NewSettingsParams(paramFilePath, nil, nil, nil, nil).StackPrefix
 
-	branchesToDelete := c.StacksToDelete(stackPrefix, olderThanDate)
+	branchesToDelete := c.StacksToDelete(stackPrefix, olderThanDate, &mainBranch)
 	for _, branchName := range branchesToDelete {
 		formattedBranchName := util.DomainSafeString(branchName)
 		branchSettings := settings.NewSettingsParams(paramFilePath, nil, nil, &branchName, &formattedBranchName)
@@ -54,7 +54,7 @@ func (c *Client) GithubNotify(settings *settings.Settings, githubParams *github.
 	}
 }
 
-func (c *Client) StacksToDelete(prefix string, olderThanDate time.Time) []string {
+func (c *Client) StacksToDelete(prefix string, olderThanDate time.Time, mainBranch *string) []string {
 	stackBranchNames := c.cloudFormationClient.ActiveCloudFormationStackBranchesWithPrefix(prefix)
 
 	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames(olderThanDate)

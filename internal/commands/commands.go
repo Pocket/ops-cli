@@ -83,6 +83,7 @@ func FeatureCleanup() cli.Command {
 					Owner:       c.String("github-owner"),
 					Repo:        c.String("github-repo"),
 				},
+				c.String("main-branch"),
 			)
 			return nil
 		},
