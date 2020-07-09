@@ -78,5 +78,10 @@ func (c *Client) StacksToDelete(prefix string, olderThanDate time.Time, mainBran
 
 	branchesToClean = util.RemoveDuplicatesFromSlice(branchesToClean)
 
+	// If we provide a main branch as a param, exclude that branch from the branches to clean
+	if mainBranch != nil {
+		branchesToClean = util.ExcludeMainBranchFromSlice(branchesToClean, mainBranch)
+	}
+
 	return branchesToClean
 }
