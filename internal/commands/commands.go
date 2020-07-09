@@ -40,6 +40,11 @@ func FeatureCleanup() cli.Command {
 				Value:  8,
 			},
 			cli.StringFlag{
+				Name:   "main-branch, mb",
+				Usage:  "Main branch to use",
+				EnvVar: "MAIN_BRANCH",
+			},
+			cli.StringFlag{
 				Name:   "github-token, ght",
 				Usage:  "The github token",
 				EnvVar: "GITHUB_TOKEN",
