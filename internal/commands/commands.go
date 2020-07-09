@@ -64,10 +64,12 @@ func FeatureCleanup() cli.Command {
 		Action: func(c *cli.Context) error {
 			stackPrefix := c.String("stack-prefix")
 			olderThanDate := time.Now().AddDate(0, 0, -c.Int("days-old"))
+			mainBranch := c.String("main-branch")
+
 			client := featureDeploy.New()
 
 			if c.BoolT("dry-run") {
-				stackBranchNames := client.StacksToDelete(stackPrefix, olderThanDate)
+				stackBranchNames := client.StacksToDelete(stackPrefix, olderThanDate, &mainBranch)
 
 				for _, stackBranchName := range stackBranchNames {
 					fmt.Println(stackBranchName)
