@@ -80,7 +80,7 @@ func (c *Client) StacksToDelete(prefix string, olderThanDate time.Time, mainBran
 
 	// If we provide a main branch as a param, exclude that branch from the branches to clean
 	if mainBranch != nil {
-		branchesToClean = util.ExcludeMainBranchFromSlice(branchesToClean, mainBranch)
+		branchesToClean = util.ExcludeMainBranchFromSlice(branchesToClean, *mainBranch)
 	}
 
 	return branchesToClean
