@@ -3,7 +3,6 @@ version: 2.1
 orbs:
   docker: circleci/docker@0.5.2
 
-
 jobs:
   check-and-build-only:
     executor: docker/machine
@@ -53,21 +52,6 @@ jobs:
           root: ./artifacts
           paths:
             - ops-cli
-
-      - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-
-      - run:
-          name: Upload coverage results to Code Climate
-          command: |
-            ./cc-test-reporter format-coverage -t gocov -p github.com/Pocket/ops-cli
-            ./cc-test-reporter upload-coverage
-
-      - store_test_results:
-          path: test-reports
 
       - store_artifacts:
           path: coverage

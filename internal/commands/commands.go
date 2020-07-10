@@ -40,6 +40,12 @@ func FeatureCleanup() cli.Command {
 				Value:  8,
 			},
 			cli.StringFlag{
+				Name:   "main-branch, mb",
+				Usage:  "Main branch to use",
+				EnvVar: "MAIN_BRANCH",
+				Value: "false",
+			},
+			cli.StringFlag{
 				Name:   "github-token, ght",
 				Usage:  "The github token",
 				EnvVar: "GITHUB_TOKEN",
@@ -58,10 +64,12 @@ func FeatureCleanup() cli.Command {
 		Action: func(c *cli.Context) error {
 			stackPrefix := c.String("stack-prefix")
 			olderThanDate := time.Now().AddDate(0, 0, -c.Int("days-old"))
+			mainBranch := c.String("main-branch")
+
 			client := featureDeploy.New()
 
 			if c.BoolT("dry-run") {
-				stackBranchNames := client.StacksToDelete(stackPrefix, olderThanDate)
+				stackBranchNames := client.StacksToDelete(stackPrefix, olderThanDate, &mainBranch)
 
 				for _, stackBranchName := range stackBranchNames {
 					fmt.Println(stackBranchName)
@@ -78,6 +86,7 @@ func FeatureCleanup() cli.Command {
 					Owner:       c.String("github-owner"),
 					Repo:        c.String("github-repo"),
 				},
+				c.String("main-branch"),
 			)
 			return nil
 		},
