@@ -57,7 +57,7 @@ func (c *Client) GithubNotify(settings *settings.Settings, githubParams *github.
 func (c *Client) StacksToDelete(prefix string, olderThanDate time.Time, mainBranch *string) []string {
 	stackBranchNames := c.cloudFormationClient.ActiveCloudFormationStackBranchesWithPrefix(prefix)
 
-	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames(olderThanDate)
+	activeBranchNames, unactiveBranchNames := git.GetActiveAndUnactiveBranchNames(olderThanDate, mainBranch)
 
 	var branchesToClean []string
 

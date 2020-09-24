@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-func GetActiveAndUnactiveBranchNames(olderThanDate time.Time) ([]string, []string) {
-	activeBranches, unactiveBranches := getActiveAndUnactiveBranches(olderThanDate)
+func GetActiveAndUnactiveBranchNames(olderThanDate time.Time, mainBranch *string) ([]string, []string) {
+	activeBranches, unactiveBranches := getActiveAndUnactiveBranches(olderThanDate, mainBranch)
 	return getBranchShortNames(activeBranches), getBranchShortNames(unactiveBranches)
 }
 
 /**
  * Gets the active and unactive branch refs
  */
-func getActiveAndUnactiveBranches(olderThanDate time.Time) ([]*plumbing.Reference, []*plumbing.Reference) {
+func getActiveAndUnactiveBranches(olderThanDate time.Time, mainBranch *string) ([]*plumbing.Reference, []*plumbing.Reference) {
 	r := repo(".")
 
 	refs, err := r.References()
@@ -23,7 +23,7 @@ func getActiveAndUnactiveBranches(olderThanDate time.Time) ([]*plumbing.Referenc
 		panic(err)
 	}
 
-	masterReference := master(r)
+	mainReference := main(r, mainBranch)
 
 	var activeBranches []*plumbing.Reference
 	var unactiveBranches []*plumbing.Reference
@@ -40,7 +40,7 @@ func getActiveAndUnactiveBranches(olderThanDate time.Time) ([]*plumbing.Referenc
 			return nil
 		}
 
-		if commit.Hash == masterReference.Hash() {
+		if commit.Hash == mainReference.Hash() {
 			return nil
 		}
 
