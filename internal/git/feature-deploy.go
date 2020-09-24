@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func GetActiveAndUnactiveBranchNames(olderThanDate time.Time, mainBranch *string) ([]string, []string) {
+func GetActiveAndUnactiveBranchNames(olderThanDate time.Time, mainBranch string) ([]string, []string) {
 	activeBranches, unactiveBranches := getActiveAndUnactiveBranches(olderThanDate, mainBranch)
 	return getBranchShortNames(activeBranches), getBranchShortNames(unactiveBranches)
 }
@@ -15,7 +15,7 @@ func GetActiveAndUnactiveBranchNames(olderThanDate time.Time, mainBranch *string
 /**
  * Gets the active and unactive branch refs
  */
-func getActiveAndUnactiveBranches(olderThanDate time.Time, mainBranch *string) ([]*plumbing.Reference, []*plumbing.Reference) {
+func getActiveAndUnactiveBranches(olderThanDate time.Time, mainBranch string) ([]*plumbing.Reference, []*plumbing.Reference) {
 	r := repo(".")
 
 	refs, err := r.References()
