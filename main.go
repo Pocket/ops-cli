@@ -23,17 +23,6 @@ func addInfo(app *cli.App) {
 	app.Usage = "An tool for all of Pockets DevOps Commands"
 	app.Version = "0.0.1"
 	app.Compiled = time.Now()
-	app.Authors = []cli.Author{
-		cli.Author{
-			Name:  "Daniel Brooks",
-			Email: "dbrooks@getpocket.com",
-		},
-		cli.Author{
-			Name:  "Kaiser Shahid",
-			Email: "kshahid@getpocket.com",
-		},
-		//If you work on this add your name!
-	}
 	app.Copyright = "(c) 2019 Read It Later, Inc."
 }
 
