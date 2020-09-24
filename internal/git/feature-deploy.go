@@ -8,7 +8,7 @@ import (
 )
 
 func GetActiveAndUnactiveBranchNames(olderThanDate time.Time, mainBranch *string) ([]string, []string) {
-	activeBranches, unactiveBranches := getActiveAndUnactiveBranches(olderThanDate, mainBranch)
+	activeBranches, unactiveBranches := getActiveAndUnactiveBranches(olderThanDate, *mainBranch)
 	return getBranchShortNames(activeBranches), getBranchShortNames(unactiveBranches)
 }
 
@@ -23,7 +23,7 @@ func getActiveAndUnactiveBranches(olderThanDate time.Time, mainBranch *string) (
 		panic(err)
 	}
 
-	mainReference := main(r, mainBranch)
+	mainReference := main(r, *mainBranch)
 
 	var activeBranches []*plumbing.Reference
 	var unactiveBranches []*plumbing.Reference
