@@ -1,10 +1,10 @@
-FROM circleci/golang:1.12
+FROM circleci/golang:1.17
 
 ENV PATH "$PATH:/home/circleci/.local/bin"
 
 USER root
 RUN apt-get update \
- && apt-get install -y python-pip curl \
+ && apt-get install -y python3-pip curl \
  && pip install awscli
 
 RUN curl -Os https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip \

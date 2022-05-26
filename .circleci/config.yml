@@ -14,7 +14,7 @@ jobs:
 
   build_and_test:
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.17
         environment:
           - AWS_REGION=us-east-1
           - AWS_ACCESS_KEY=1234
