@@ -63,6 +63,7 @@ func (c *Client) DeployUpdate(clusterName *string, serviceName *string, imageNam
 // RegisterTaskDefinition updates the existing task definition's image.
 func (c *Client) registerTaskDefinition(task *string, images *[]string) (string, error) {
 	output, err := c.client.DescribeTaskDefinitionRequest(&ecs.DescribeTaskDefinitionInput{
+		Include: []ecs.TaskDefinitionField{ecs.TaskDefinitionFieldTags},
 		TaskDefinition: task,
 	}).Send(c.clientContext)
 
