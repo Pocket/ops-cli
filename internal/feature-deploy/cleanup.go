@@ -32,7 +32,7 @@ func (c *Client) CleanUpBranch(settings *settings.Settings, slackWebHook *string
 		c.GithubNotify(settings, githubParams)
 	}
 
-	if slackWebHook != nil {
+	if slackWebHook != nil && *slackWebHook != "" {
 		c.SlackNotify(settings, slackWebHook)
 	}
 }
